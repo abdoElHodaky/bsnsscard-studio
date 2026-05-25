@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AbdElrhman — Business Card Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;900&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#09090f;--bg2:#111118;--bg3:#1a1a24;--bg4:#22222e;
+  --border:#2a2a3a;--border2:#3a3a4e;
+  --text:#f0ede8;--text2:#a09a90;--text3:#5a5568;
+  --gold:#c9a96e;--gold2:#e8cc99;--gold3:#7a5a2a;
+  --blue:#5468FF;--green:#56d364;--red:#f85149;--yellow:#ffa657;
+  --mono:'DM Mono',monospace;
+  --serif:'Playfair Display',serif;
+  --syne:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--syne);min-height:100vh;padding:1.2rem;overflow-x:hidden}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;padding-bottom:.9rem;border-bottom:1px solid var(--border)}
+.hdr-brand{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:3px}
+.hdr-sub{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px}
+.hdr-acts{display:flex;gap:6px}
+.main-grid{display:grid;grid-template-columns:1fr 340px;gap:1.2rem;align-items:start}
+.stage{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.8rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.1rem}
+.stage-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;align-self:flex-start}
+/* 3D CARD */
+.scene{perspective:1400px;cursor:pointer;user-select:none}
+.card-body{position:relative;width:504px;height:288px;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.4,0,.2,1)}
+.card-body.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 28px 80px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.06);padding:22px 26px;display:flex;flex-direction:column;justify-content:space-between}
+.back-face{transform:rotateY(180deg);align-items:center}
+/* THEMES */
+.t-gold .front-face{background:linear-gradient(140deg,#0c0c14 0%,#121209 55%,#181206 100%)}
+.t-gold .back-face{background:linear-gradient(140deg,#181206 0%,#121209 55%,#0c0c14 100%)}
+.t-mid .front-face{background:linear-gradient(140deg,#06091a 0%,#0d1b2e 55%,#091428 100%)}
+.t-mid .back-face{background:linear-gradient(140deg,#091428 0%,#0d1b2e 55%,#06091a 100%)}
+.t-mid .f-name{color:#79c0ff!important}.t-mid .f-divider{background:linear-gradient(90deg,#5468FF,transparent)!important}.t-mid .f-role{color:#5468FF!important}.t-mid .f-lbl{color:#2e4a70!important}.t-mid .f-val{color:#93c5fd!important}.t-mid .f-loc{color:#2e4a70!important}.t-mid .corner{border-color:rgba(84,104,255,.4)!important}.t-mid .gridline{border-color:rgba(84,104,255,.07)!important}.t-mid .monogram{border-color:rgba(84,104,255,.3)!important;color:#79c0ff!important;background:rgba(84,104,255,.06)!important}.t-mid .b-url{color:#79c0ff!important}.t-mid .b-tag{color:#3a5888!important}.t-mid .b-scan{color:#2e4a70!important}.t-mid .b-stat-l{color:#2e4a70!important}
+.t-slate .front-face{background:linear-gradient(140deg,#f5f2ed 0%,#ede9e2 55%,#e5ddd4 100%)}.t-slate .back-face{background:linear-gradient(140deg,#e5ddd4 0%,#ede9e2 55%,#f5f2ed 100%)}.t-slate .f-name{color:#1a130a!important}.t-slate .f-role{color:#6b4f2a!important}.t-slate .f-divider{background:linear-gradient(90deg,#c9a96e,transparent)!important}.t-slate .f-lbl{color:#a08060!important}.t-slate .f-val{color:#2a1e10!important}.t-slate .f-loc{color:#a08060!important}.t-slate .corner{border-color:rgba(90,74,42,.35)!important}.t-slate .gridline{border-color:rgba(90,74,42,.07)!important}.t-slate .monogram{border-color:rgba(90,74,42,.3)!important;color:#8a6a3a!important;background:rgba(90,74,42,.06)!important}.t-slate .b-url{color:#1a130a!important}.t-slate .b-tag{color:#8a6a3a!important}.t-slate .b-scan{color:#a08060!important}.t-slate .b-stat-l{color:#a08060!important}.t-slate .b-stat-v{color:#2a1e10!important}
+/* OVERLAY */
+.grid-ov{position:absolute;inset:0;pointer-events:none;z-index:0}
+.gridline{border:0 solid rgba(201,169,110,.07)}
+.gridline.h{position:absolute;left:0;right:0;height:0;border-top-width:1px}
+.gridline.v{position:absolute;top:0;bottom:0;width:0;border-left-width:1px}
+.g1{top:33%}.g2{top:66%}.g3{left:33%}.g4{left:66%}
+.corner{position:absolute;width:14px;height:14px;border-color:rgba(201,169,110,.4);border-style:solid}
+.corner.tl{top:11px;left:11px;border-width:1.5px 0 0 1.5px}.corner.tr{top:11px;right:11px;border-width:1.5px 1.5px 0 0}.corner.bl{bottom:11px;left:11px;border-width:0 0 1.5px 1.5px}.corner.br{bottom:11px;right:11px;border-width:0 1.5px 1.5px 0}
+/* FRONT */
+.f-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.monogram{width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,169,110,.3);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;font-weight:700;color:var(--gold);background:rgba(201,169,110,.05);flex-shrink:0;letter-spacing:-1px}
+.f-dots{display:flex;gap:4px;align-items:center;padding-top:8px}
+.fdot{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.fdot:nth-child(1){opacity:.9}.fdot:nth-child(2){opacity:.4}.fdot:nth-child(3){opacity:.15}
+.f-mid{position:relative;z-index:2}
+.f-name{font-family:var(--serif);font-size:21px;font-weight:900;color:var(--gold2);letter-spacing:-.3px;line-height:1.1;margin-bottom:4px}
+.f-divider{height:1px;width:44px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:6px}
+.f-role{font-family:var(--mono);font-size:8px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;line-height:1.7}
+.f-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:2}
+.f-contacts{display:flex;flex-direction:column;gap:3.5px}
+.f-row{display:flex;align-items:center;gap:7px}
+.f-lbl{font-family:var(--mono);font-size:7px;color:var(--gold3);text-transform:uppercase;letter-spacing:.8px;min-width:26px}
+.f-val{font-family:var(--mono);font-size:8.5px;color:var(--text2)}
+.f-loc{font-family:var(--mono);font-size:7px;color:var(--gold3);letter-spacing:.5px;margin-top:2px}
+/* QR containers */
+.f-qr-wrap{position:relative;flex-shrink:0;z-index:10}
+.f-qr{width:56px;height:56px;background:#fff;border-radius:5px;border:1px solid rgba(201,169,110,.25);overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s;padding:3px}
+.f-qr:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(201,169,110,.35)}
+.f-qr svg{width:50px!important;height:50px!important;display:block}
+.f-qr-hint{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:7px;color:var(--gold3);white-space:nowrap;letter-spacing:.5px}
+/* BACK */
+.b-top{display:flex;flex-direction:column;align-items:center;z-index:2;gap:5px;padding-top:4px}
+.b-tag{font-family:var(--mono);font-size:7px;color:var(--gold3);letter-spacing:2.5px;text-transform:uppercase}
+.b-qr{width:116px;height:116px;background:#fff;border-radius:8px;padding:7px;border:2px solid rgba(201,169,110,.45);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 0 5px rgba(201,169,110,.07);cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;z-index:2;overflow:hidden}
+.b-qr:hover{transform:scale(1.04);box-shadow:0 14px 44px rgba(0,0,0,.6),0 0 0 8px rgba(201,169,110,.14)}
+.b-qr svg{width:102px!important;height:102px!important;display:block}
+.b-scan{font-family:var(--mono);font-size:7px;color:var(--gold3);letter-spacing:1.5px;text-transform:uppercase;z-index:2}
+.b-mid{z-index:2;text-align:center}
+.b-url{font-family:var(--mono);font-size:9.5px;color:var(--gold2);letter-spacing:.3px}
+.b-line{width:36px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:.3rem auto}
+.b-bottom{display:flex;gap:18px;z-index:2;margin-bottom:4px}
+.b-stat{text-align:center}
+.b-stat-l{font-family:var(--mono);font-size:7px;color:var(--gold3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.b-stat-v{font-family:var(--mono);font-size:8.5px;color:var(--text2)}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:2rem;max-width:380px;width:92%;text-align:center;animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h2{font-family:var(--serif);font-size:22px;color:var(--gold2);margin-bottom:.3rem}
+.modal-sub{font-family:var(--mono);font-size:10.5px;color:var(--text3);margin-bottom:1.2rem;line-height:1.6}
+.modal-qr{width:180px;height:180px;background:#fff;border-radius:12px;padding:10px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.modal-qr svg{width:160px!important;height:160px!important;display:block}
+.modal-url{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--bg3);padding:8px 14px;border-radius:7px;margin-bottom:1rem;word-break:break-all;cursor:pointer;border:1px solid var(--border)}
+.modal-url:hover{border-color:var(--blue)}
+.modal-specs{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.8;margin-bottom:1rem;background:var(--bg3);border-radius:7px;padding:.6rem .9rem;text-align:left}
+.modal-specs span{color:var(--gold)}
+.modal-btns{display:flex;gap:8px;justify-content:center}
+/* STATUS */
+.qr-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:7px;background:var(--bg3);border:1px solid var(--border);font-family:var(--mono);font-size:10px;width:100%}
+.qr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.qr-dot.ok{background:var(--green);animation:blink 2.5s infinite}.qr-dot.loading{background:var(--yellow)}.qr-dot.err{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+/* PANEL */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.1rem;display:flex;flex-direction:column;gap:1rem}
+.p-sec{display:flex;flex-direction:column;gap:.45rem}
+.p-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.1rem}
+.p-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;font-family:var(--mono);color:var(--text);width:100%;outline:none;transition:border-color .15s}
+.p-input:focus{border-color:var(--gold3)}.p-input::placeholder{color:var(--text3)}
+.theme-row{display:flex;gap:8px}
+.tdot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.tdot:hover{transform:scale(1.1)}.tdot.active{border-color:var(--text);box-shadow:0 0 0 3px rgba(240,237,232,.12)}
+.tdot.d-gold{background:conic-gradient(#0c0c14 0%,#c9a96e 100%)}.tdot.d-mid{background:conic-gradient(#06091a 0%,#5468FF 100%)}.tdot.d-slate{background:conic-gradient(#f5f2ed 0%,#c9a96e 100%)}
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tpl{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.6rem;cursor:pointer;transition:border-color .15s;text-align:center}
+.tpl:hover{border-color:var(--border2)}.tpl.active{border-color:var(--gold)}
+.tpl-sw{width:100%;height:18px;border-radius:3px;margin-bottom:4px}
+.tpl-n{font-size:11px;font-weight:600;color:var(--text2)}.tpl-d{font-size:9.5px;color:var(--text3);font-family:var(--mono)}
+.qr-quick{display:flex;gap:4px;flex-wrap:wrap}
+.qb{padding:3px 9px;border:1px solid var(--border);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--text3);background:none;cursor:pointer;transition:all .15s}
+.qb:hover{border-color:var(--gold3);color:var(--gold)}.qb.sel{border-color:var(--gold);color:var(--gold);background:rgba(201,169,110,.07)}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 13px;border-radius:7px;font-size:12px;font-family:var(--syne);font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-gold{background:var(--gold);color:#0a0807}.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{opacity:.85}
+.btn-scan{background:linear-gradient(135deg,#1d9e50,#28c86a);color:#020d06;font-size:13px;font-weight:700;padding:10px 16px;width:100%;border-radius:9px;border:none;cursor:pointer;font-family:var(--syne);box-shadow:0 4px 18px rgba(86,211,100,.28);transition:all .2s}
+.btn-scan:hover{box-shadow:0 6px 24px rgba(86,211,100,.45);transform:translateY(-1px)}
+.info-box{background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;padding:.75rem;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.85;width:100%}
+.info-box em{color:var(--gold);font-style:normal}
+@media print{
+  body{background:#fff;padding:0}
+  .panel,.hdr,.stage-lbl,.qr-bar,.btn-row,.p-sec,.tpl-grid,.theme-row,.info-box,.btn-scan,.modal-bg{display:none!important}
+  .main-grid{grid-template-columns:1fr;gap:0}
+  .stage{background:none;border:none;padding:0;gap:2rem}
+  .scene{perspective:none}
+  .card-body{transform:none!important;width:3.5in;height:2in;transform-style:flat}
+  .face{position:relative;box-shadow:none;transform:none!important;backface-visibility:visible;height:2in;break-inside:avoid}
+  .back-face{transform:none!important;margin-top:.25in}
+}
+</style>
+</head>
+<body>
+
+<div class="modal-bg" id="scanModal" onclick="bgClose(event)">
+  <div class="modal">
+    <h2>📱 Scan to Test</h2>
+    <p class="modal-sub">Point your phone camera at this QR code<br/>or tap the link below to verify it opens</p>
+    <div class="modal-qr" id="modalQrEl"></div>
+    <div class="modal-url" id="modalUrlTxt" onclick="openURL()">🔗 github.com/abdoElHodaky</div>
+    <div class="modal-specs">
+      <span>Engine:</span> Pure JavaScript · Zero network calls · Works offline<br>
+      <span>Error correction:</span> Level H — 30% damage tolerance<br>
+      <span>Contrast:</span> Pure #000000 on #ffffff · Max scannability<br>
+      <span>Works with:</span> iPhone, Android, Google Lens, all QR apps
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+      <button class="btn btn-blue" onclick="openURL()">Open Link ↗</button>
+    </div>
+  </div>
+</div>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-brand">CARD STUDIO</div>
+    <div class="hdr-sub">abdoElHodaky · Offline QR · Pure JavaScript · No External Dependencies</div>
+  </div>
+  <div class="hdr-acts">
+    <button class="btn btn-ghost" onclick="flipCard()">↻ Flip</button>
+    <button class="btn btn-gold" onclick="window.print()">⬇ Print / PDF</button>
+  </div>
+</div>
+
+<div class="main-grid">
+  <div class="stage">
+    <div class="stage-lbl">▸ Live Preview — click card to flip · click QR to scan test</div>
+    <div class="scene" id="scene">
+      <div class="card-body t-gold" id="cardBody" onclick="flipCard()">
+        <div class="face front-face" id="frontFace" onclick="stopFlip(event)">
+          <div class="grid-ov"><div class="gridline h g1"></div><div class="gridline h g2"></div><div class="gridline v g3"></div><div class="gridline v g4"></div></div>
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+          <div class="f-top">
+            <div class="monogram" id="fMono">AE</div>
+            <div class="f-dots"><div class="fdot"></div><div class="fdot"></div><div class="fdot"></div></div>
+          </div>
+          <div class="f-mid">
+            <div class="f-name" id="fName">AbdElrhman ElHodaky</div>
+            <div class="f-divider"></div>
+            <div class="f-role" id="fRole">Backend Engineer · DevOps Practitioner</div>
+          </div>
+          <div class="f-bottom">
+            <div class="f-contacts">
+              <div class="f-row"><span class="f-lbl">web</span><span class="f-val" id="fWeb">github.com/abdoElHodaky</span></div>
+              <div class="f-row"><span class="f-lbl">mail</span><span class="f-val" id="fEmail">abdo_elhodaky@yahoo.com</span></div>
+              <div class="f-row"><span class="f-lbl">tel</span><span class="f-val" id="fPhone">+20 114 189 4373</span></div>
+              <div class="f-loc" id="fLoc">📍 Gharbia, Egypt · open to remote</div>
+            </div>
+            <div class="f-qr-wrap">
+              <div class="f-qr" id="qrFront" onclick="openModal(event)" title="Click to scan test"></div>
+              <div class="f-qr-hint">tap to scan ↑</div>
+            </div>
+          </div>
+        </div>
+        <div class="face back-face" id="backFace" onclick="stopFlip(event)">
+          <div class="grid-ov"><div class="gridline h g1"></div><div class="gridline h g2"></div><div class="gridline v g3"></div><div class="gridline v g4"></div></div>
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+          <div class="b-top">
+            <div class="b-tag">Scan to connect</div>
+            <div class="b-qr" id="qrBack" onclick="openModal(event)" title="Click to scan test"></div>
+            <div class="b-scan">github · linkedin · portfolio</div>
+          </div>
+          <div class="b-mid">
+            <div class="b-url" id="bUrl">github.com/abdoElHodaky</div>
+            <div class="b-line"></div>
+          </div>
+          <div class="b-bottom">
+            <div class="b-stat"><div class="b-stat-l">stack</div><div class="b-stat-v">NestJS · K8s</div></div>
+            <div class="b-stat"><div class="b-stat-l">cloud</div><div class="b-stat-v">AWS · Terraform</div></div>
+            <div class="b-stat"><div class="b-stat-l">scale</div><div class="b-stat-v">60M+ ops/hr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-scan" onclick="openModal(null)">📱 Open Scan Test — Point Your Phone Here</button>
+    <div class="qr-bar">
+      <div class="qr-dot ok" id="qrDot"></div>
+      <span id="qrTxt">QR ready · Pure JS · Offline · Error correction H · Scannable</span>
+    </div>
+    <div class="info-box">
+      <em>Engine:</em> Pure JavaScript QR generator — zero network, works offline<br>
+      <em>Print:</em> 3.5 × 2 inch standard · Print / PDF button → Save as PDF<br>
+      <em>QR:</em> Error correction H · 30% damage tolerance · Pure black on white<br>
+      <em>Scannable by:</em> iPhone native camera, Android, Google Lens, all apps
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="p-sec">
+      <div class="p-lbl">Theme</div>
+      <div class="theme-row">
+        <div class="tdot d-gold active" title="Dark Gold" onclick="setTheme('t-gold',this)"></div>
+        <div class="tdot d-mid" title="Midnight Blue" onclick="setTheme('t-mid',this)"></div>
+        <div class="tdot d-slate" title="Slate White" onclick="setTheme('t-slate',this)"></div>
+      </div>
+    </div>
+    <div class="p-sec">
+      <div class="p-lbl">Templates</div>
+      <div class="tpl-grid">
+        <div class="tpl active" onclick="loadTpl('backend',this)"><div class="tpl-sw" style="background:linear-gradient(90deg,#111118,#c9a96e)"></div><div class="tpl-n">Backend</div><div class="tpl-d">dark gold</div></div>
+        <div class="tpl" onclick="loadTpl('devops',this)"><div class="tpl-sw" style="background:linear-gradient(90deg,#060918,#5468FF)"></div><div class="tpl-n">DevOps</div><div class="tpl-d">midnight</div></div>
+        <div class="tpl" onclick="loadTpl('freelance',this)"><div class="tpl-sw" style="background:linear-gradient(90deg,#ede9e2,#c9a96e)"></div><div class="tpl-n">Freelancer</div><div class="tpl-d">slate white</div></div>
+        <div class="tpl" onclick="loadTpl('architect',this)"><div class="tpl-sw" style="background:linear-gradient(90deg,#0a0a12,#56d364)"></div><div class="tpl-n">Architect</div><div class="tpl-d">dark · scale</div></div>
+      </div>
+    </div>
+    <div class="p-sec">
+      <div class="p-lbl">Personalise</div>
+      <input class="p-input" id="iName"  value="AbdElrhman ElHodaky"                   placeholder="Full name"    oninput="liveUpdate()"/>
+      <input class="p-input" id="iRole"  value="Backend Engineer · DevOps Practitioner" placeholder="Role / title"  oninput="liveUpdate()"/>
+      <input class="p-input" id="iEmail" value="abdo_elhodaky@yahoo.com"                placeholder="Email"        oninput="liveUpdate()"/>
+      <input class="p-input" id="iPhone" value="+20 114 189 4373"                       placeholder="Phone"        oninput="liveUpdate()"/>
+      <input class="p-input" id="iLoc"   value="📍 Gharbia, Egypt · open to remote"    placeholder="Location"     oninput="liveUpdate()"/>
+    </div>
+    <div class="p-sec">
+      <div class="p-lbl">QR Code Target</div>
+      <input class="p-input" id="iQR" value="https://github.com/abdoElHodaky" placeholder="https://..." oninput="debounceQR(this.value)"/>
+      <div class="qr-quick">
+        <button class="qb sel" onclick="setQR('https://github.com/abdoElHodaky',this)">GitHub</button>
+        <button class="qb"     onclick="setQR('https://hello.cv/abdoelhodaky',this)">Portfolio</button>
+        <button class="qb"     onclick="setQR('https://linkedin.com/in/abdelrhman-elhodaky-9521bb220',this)">LinkedIn</button>
+        <button class="qb"     onclick="setQR('https://wa.me/201141894373',this)">WhatsApp</button>
+      </div>
+    </div>
+    <div class="p-sec">
+      <div class="p-lbl">Actions</div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="window.print()" style="flex:1">⬇ Print / PDF</button>
+        <button class="btn btn-ghost" onclick="flipCard()">↻ Flip</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="saveTpl()" style="flex:1">💾 Save Template</button>
+        <button class="btn btn-ghost" onclick="resetCard()">↺ Reset</button>
+      </div>
+      <button class="btn btn-blue" style="width:100%;margin-top:2px" onclick="openModal(null)">📱 Scan Test Modal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// BUNDLED QR LIBRARY (pure JS, offline, no network)
+// ════════════════════════════════════════════
+var QRCodeLib = (() => {
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+
+  // tmp/npmenv/node_modules/qrcode/lib/can-promise.js
+  var require_can_promise = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/can-promise.js"(exports, module) {
+      module.exports = function() {
+        return typeof Promise === "function" && Promise.prototype && Promise.prototype.then;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/utils.js
+  var require_utils = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/utils.js"(exports) {
+      var toSJISFunction;
+      var CODEWORDS_COUNT = [
+        0,
+        // Not used
+        26,
+        44,
+        70,
+        100,
+        134,
+        172,
+        196,
+        242,
+        292,
+        346,
+        404,
+        466,
+        532,
+        581,
+        655,
+        733,
+        815,
+        901,
+        991,
+        1085,
+        1156,
+        1258,
+        1364,
+        1474,
+        1588,
+        1706,
+        1828,
+        1921,
+        2051,
+        2185,
+        2323,
+        2465,
+        2611,
+        2761,
+        2876,
+        3034,
+        3196,
+        3362,
+        3532,
+        3706
+      ];
+      exports.getSymbolSize = function getSymbolSize(version) {
+        if (!version) throw new Error('"version" cannot be null or undefined');
+        if (version < 1 || version > 40) throw new Error('"version" should be in range from 1 to 40');
+        return version * 4 + 17;
+      };
+      exports.getSymbolTotalCodewords = function getSymbolTotalCodewords(version) {
+        return CODEWORDS_COUNT[version];
+      };
+      exports.getBCHDigit = function(data) {
+        let digit = 0;
+        while (data !== 0) {
+          digit++;
+          data >>>= 1;
+        }
+        return digit;
+      };
+      exports.setToSJISFunction = function setToSJISFunction(f) {
+        if (typeof f !== "function") {
+          throw new Error('"toSJISFunc" is not a valid function.');
+        }
+        toSJISFunction = f;
+      };
+      exports.isKanjiModeEnabled = function() {
+        return typeof toSJISFunction !== "undefined";
+      };
+      exports.toSJIS = function toSJIS(kanji) {
+        return toSJISFunction(kanji);
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/error-correction-level.js
+  var require_error_correction_level = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/error-correction-level.js"(exports) {
+      exports.L = { bit: 1 };
+      exports.M = { bit: 0 };
+      exports.Q = { bit: 3 };
+      exports.H = { bit: 2 };
+      function fromString(string) {
+        if (typeof string !== "string") {
+          throw new Error("Param is not a string");
+        }
+        const lcStr = string.toLowerCase();
+        switch (lcStr) {
+          case "l":
+          case "low":
+            return exports.L;
+          case "m":
+          case "medium":
+            return exports.M;
+          case "q":
+          case "quartile":
+            return exports.Q;
+          case "h":
+          case "high":
+            return exports.H;
+          default:
+            throw new Error("Unknown EC Level: " + string);
+        }
+      }
+      exports.isValid = function isValid(level) {
+        return level && typeof level.bit !== "undefined" && level.bit >= 0 && level.bit < 4;
+      };
+      exports.from = function from(value, defaultValue) {
+        if (exports.isValid(value)) {
+          return value;
+        }
+        try {
+          return fromString(value);
+        } catch (e) {
+          return defaultValue;
+        }
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/bit-buffer.js
+  var require_bit_buffer = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/bit-buffer.js"(exports, module) {
+      function BitBuffer() {
+        this.buffer = [];
+        this.length = 0;
+      }
+      BitBuffer.prototype = {
+        get: function(index) {
+          const bufIndex = Math.floor(index / 8);
+          return (this.buffer[bufIndex] >>> 7 - index % 8 & 1) === 1;
+        },
+        put: function(num, length) {
+          for (let i = 0; i < length; i++) {
+            this.putBit((num >>> length - i - 1 & 1) === 1);
+          }
+        },
+        getLengthInBits: function() {
+          return this.length;
+        },
+        putBit: function(bit) {
+          const bufIndex = Math.floor(this.length / 8);
+          if (this.buffer.length <= bufIndex) {
+            this.buffer.push(0);
+          }
+          if (bit) {
+            this.buffer[bufIndex] |= 128 >>> this.length % 8;
+          }
+          this.length++;
+        }
+      };
+      module.exports = BitBuffer;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/bit-matrix.js
+  var require_bit_matrix = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/bit-matrix.js"(exports, module) {
+      function BitMatrix(size) {
+        if (!size || size < 1) {
+          throw new Error("BitMatrix size must be defined and greater than 0");
+        }
+        this.size = size;
+        this.data = new Uint8Array(size * size);
+        this.reservedBit = new Uint8Array(size * size);
+      }
+      BitMatrix.prototype.set = function(row, col, value, reserved) {
+        const index = row * this.size + col;
+        this.data[index] = value;
+        if (reserved) this.reservedBit[index] = true;
+      };
+      BitMatrix.prototype.get = function(row, col) {
+        return this.data[row * this.size + col];
+      };
+      BitMatrix.prototype.xor = function(row, col, value) {
+        this.data[row * this.size + col] ^= value;
+      };
+      BitMatrix.prototype.isReserved = function(row, col) {
+        return this.reservedBit[row * this.size + col];
+      };
+      module.exports = BitMatrix;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/alignment-pattern.js
+  var require_alignment_pattern = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/alignment-pattern.js"(exports) {
+      var getSymbolSize = require_utils().getSymbolSize;
+      exports.getRowColCoords = function getRowColCoords(version) {
+        if (version === 1) return [];
+        const posCount = Math.floor(version / 7) + 2;
+        const size = getSymbolSize(version);
+        const intervals = size === 145 ? 26 : Math.ceil((size - 13) / (2 * posCount - 2)) * 2;
+        const positions = [size - 7];
+        for (let i = 1; i < posCount - 1; i++) {
+          positions[i] = positions[i - 1] - intervals;
+        }
+        positions.push(6);
+        return positions.reverse();
+      };
+      exports.getPositions = function getPositions(version) {
+        const coords = [];
+        const pos = exports.getRowColCoords(version);
+        const posLength = pos.length;
+        for (let i = 0; i < posLength; i++) {
+          for (let j = 0; j < posLength; j++) {
+            if (i === 0 && j === 0 || // top-left
+            i === 0 && j === posLength - 1 || // bottom-left
+            i === posLength - 1 && j === 0) {
+              continue;
+            }
+            coords.push([pos[i], pos[j]]);
+          }
+        }
+        return coords;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/finder-pattern.js
+  var require_finder_pattern = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/finder-pattern.js"(exports) {
+      var getSymbolSize = require_utils().getSymbolSize;
+      var FINDER_PATTERN_SIZE = 7;
+      exports.getPositions = function getPositions(version) {
+        const size = getSymbolSize(version);
+        return [
+          // top-left
+          [0, 0],
+          // top-right
+          [size - FINDER_PATTERN_SIZE, 0],
+          // bottom-left
+          [0, size - FINDER_PATTERN_SIZE]
+        ];
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/mask-pattern.js
+  var require_mask_pattern = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/mask-pattern.js"(exports) {
+      exports.Patterns = {
+        PATTERN000: 0,
+        PATTERN001: 1,
+        PATTERN010: 2,
+        PATTERN011: 3,
+        PATTERN100: 4,
+        PATTERN101: 5,
+        PATTERN110: 6,
+        PATTERN111: 7
+      };
+      var PenaltyScores = {
+        N1: 3,
+        N2: 3,
+        N3: 40,
+        N4: 10
+      };
+      exports.isValid = function isValid(mask) {
+        return mask != null && mask !== "" && !isNaN(mask) && mask >= 0 && mask <= 7;
+      };
+      exports.from = function from(value) {
+        return exports.isValid(value) ? parseInt(value, 10) : void 0;
+      };
+      exports.getPenaltyN1 = function getPenaltyN1(data) {
+        const size = data.size;
+        let points = 0;
+        let sameCountCol = 0;
+        let sameCountRow = 0;
+        let lastCol = null;
+        let lastRow = null;
+        for (let row = 0; row < size; row++) {
+          sameCountCol = sameCountRow = 0;
+          lastCol = lastRow = null;
+          for (let col = 0; col < size; col++) {
+            let module2 = data.get(row, col);
+            if (module2 === lastCol) {
+              sameCountCol++;
+            } else {
+              if (sameCountCol >= 5) points += PenaltyScores.N1 + (sameCountCol - 5);
+              lastCol = module2;
+              sameCountCol = 1;
+            }
+            module2 = data.get(col, row);
+            if (module2 === lastRow) {
+              sameCountRow++;
+            } else {
+              if (sameCountRow >= 5) points += PenaltyScores.N1 + (sameCountRow - 5);
+              lastRow = module2;
+              sameCountRow = 1;
+            }
+          }
+          if (sameCountCol >= 5) points += PenaltyScores.N1 + (sameCountCol - 5);
+          if (sameCountRow >= 5) points += PenaltyScores.N1 + (sameCountRow - 5);
+        }
+        return points;
+      };
+      exports.getPenaltyN2 = function getPenaltyN2(data) {
+        const size = data.size;
+        let points = 0;
+        for (let row = 0; row < size - 1; row++) {
+          for (let col = 0; col < size - 1; col++) {
+            const last = data.get(row, col) + data.get(row, col + 1) + data.get(row + 1, col) + data.get(row + 1, col + 1);
+            if (last === 4 || last === 0) points++;
+          }
+        }
+        return points * PenaltyScores.N2;
+      };
+      exports.getPenaltyN3 = function getPenaltyN3(data) {
+        const size = data.size;
+        let points = 0;
+        let bitsCol = 0;
+        let bitsRow = 0;
+        for (let row = 0; row < size; row++) {
+          bitsCol = bitsRow = 0;
+          for (let col = 0; col < size; col++) {
+            bitsCol = bitsCol << 1 & 2047 | data.get(row, col);
+            if (col >= 10 && (bitsCol === 1488 || bitsCol === 93)) points++;
+            bitsRow = bitsRow << 1 & 2047 | data.get(col, row);
+            if (col >= 10 && (bitsRow === 1488 || bitsRow === 93)) points++;
+          }
+        }
+        return points * PenaltyScores.N3;
+      };
+      exports.getPenaltyN4 = function getPenaltyN4(data) {
+        let darkCount = 0;
+        const modulesCount = data.data.length;
+        for (let i = 0; i < modulesCount; i++) darkCount += data.data[i];
+        const k = Math.abs(Math.ceil(darkCount * 100 / modulesCount / 5) - 10);
+        return k * PenaltyScores.N4;
+      };
+      function getMaskAt(maskPattern, i, j) {
+        switch (maskPattern) {
+          case exports.Patterns.PATTERN000:
+            return (i + j) % 2 === 0;
+          case exports.Patterns.PATTERN001:
+            return i % 2 === 0;
+          case exports.Patterns.PATTERN010:
+            return j % 3 === 0;
+          case exports.Patterns.PATTERN011:
+            return (i + j) % 3 === 0;
+          case exports.Patterns.PATTERN100:
+            return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0;
+          case exports.Patterns.PATTERN101:
+            return i * j % 2 + i * j % 3 === 0;
+          case exports.Patterns.PATTERN110:
+            return (i * j % 2 + i * j % 3) % 2 === 0;
+          case exports.Patterns.PATTERN111:
+            return (i * j % 3 + (i + j) % 2) % 2 === 0;
+          default:
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+      }
+      exports.applyMask = function applyMask(pattern, data) {
+        const size = data.size;
+        for (let col = 0; col < size; col++) {
+          for (let row = 0; row < size; row++) {
+            if (data.isReserved(row, col)) continue;
+            data.xor(row, col, getMaskAt(pattern, row, col));
+          }
+        }
+      };
+      exports.getBestMask = function getBestMask(data, setupFormatFunc) {
+        const numPatterns = Object.keys(exports.Patterns).length;
+        let bestPattern = 0;
+        let lowerPenalty = Infinity;
+        for (let p = 0; p < numPatterns; p++) {
+          setupFormatFunc(p);
+          exports.applyMask(p, data);
+          const penalty = exports.getPenaltyN1(data) + exports.getPenaltyN2(data) + exports.getPenaltyN3(data) + exports.getPenaltyN4(data);
+          exports.applyMask(p, data);
+          if (penalty < lowerPenalty) {
+            lowerPenalty = penalty;
+            bestPattern = p;
+          }
+        }
+        return bestPattern;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/error-correction-code.js
+  var require_error_correction_code = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/error-correction-code.js"(exports) {
+      var ECLevel = require_error_correction_level();
+      var EC_BLOCKS_TABLE = [
+        // L  M  Q  H
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        4,
+        1,
+        2,
+        4,
+        4,
+        2,
+        4,
+        4,
+        4,
+        2,
+        4,
+        6,
+        5,
+        2,
+        4,
+        6,
+        6,
+        2,
+        5,
+        8,
+        8,
+        4,
+        5,
+        8,
+        8,
+        4,
+        5,
+        8,
+        11,
+        4,
+        8,
+        10,
+        11,
+        4,
+        9,
+        12,
+        16,
+        4,
+        9,
+        16,
+        16,
+        6,
+        10,
+        12,
+        18,
+        6,
+        10,
+        17,
+        16,
+        6,
+        11,
+        16,
+        19,
+        6,
+        13,
+        18,
+        21,
+        7,
+        14,
+        21,
+        25,
+        8,
+        16,
+        20,
+        25,
+        8,
+        17,
+        23,
+        25,
+        9,
+        17,
+        23,
+        34,
+        9,
+        18,
+        25,
+        30,
+        10,
+        20,
+        27,
+        32,
+        12,
+        21,
+        29,
+        35,
+        12,
+        23,
+        34,
+        37,
+        12,
+        25,
+        34,
+        40,
+        13,
+        26,
+        35,
+        42,
+        14,
+        28,
+        38,
+        45,
+        15,
+        29,
+        40,
+        48,
+        16,
+        31,
+        43,
+        51,
+        17,
+        33,
+        45,
+        54,
+        18,
+        35,
+        48,
+        57,
+        19,
+        37,
+        51,
+        60,
+        19,
+        38,
+        53,
+        63,
+        20,
+        40,
+        56,
+        66,
+        21,
+        43,
+        59,
+        70,
+        22,
+        45,
+        62,
+        74,
+        24,
+        47,
+        65,
+        77,
+        25,
+        49,
+        68,
+        81
+      ];
+      var EC_CODEWORDS_TABLE = [
+        // L  M  Q  H
+        7,
+        10,
+        13,
+        17,
+        10,
+        16,
+        22,
+        28,
+        15,
+        26,
+        36,
+        44,
+        20,
+        36,
+        52,
+        64,
+        26,
+        48,
+        72,
+        88,
+        36,
+        64,
+        96,
+        112,
+        40,
+        72,
+        108,
+        130,
+        48,
+        88,
+        132,
+        156,
+        60,
+        110,
+        160,
+        192,
+        72,
+        130,
+        192,
+        224,
+        80,
+        150,
+        224,
+        264,
+        96,
+        176,
+        260,
+        308,
+        104,
+        198,
+        288,
+        352,
+        120,
+        216,
+        320,
+        384,
+        132,
+        240,
+        360,
+        432,
+        144,
+        280,
+        408,
+        480,
+        168,
+        308,
+        448,
+        532,
+        180,
+        338,
+        504,
+        588,
+        196,
+        364,
+        546,
+        650,
+        224,
+        416,
+        600,
+        700,
+        224,
+        442,
+        644,
+        750,
+        252,
+        476,
+        690,
+        816,
+        270,
+        504,
+        750,
+        900,
+        300,
+        560,
+        810,
+        960,
+        312,
+        588,
+        870,
+        1050,
+        336,
+        644,
+        952,
+        1110,
+        360,
+        700,
+        1020,
+        1200,
+        390,
+        728,
+        1050,
+        1260,
+        420,
+        784,
+        1140,
+        1350,
+        450,
+        812,
+        1200,
+        1440,
+        480,
+        868,
+        1290,
+        1530,
+        510,
+        924,
+        1350,
+        1620,
+        540,
+        980,
+        1440,
+        1710,
+        570,
+        1036,
+        1530,
+        1800,
+        570,
+        1064,
+        1590,
+        1890,
+        600,
+        1120,
+        1680,
+        1980,
+        630,
+        1204,
+        1770,
+        2100,
+        660,
+        1260,
+        1860,
+        2220,
+        720,
+        1316,
+        1950,
+        2310,
+        750,
+        1372,
+        2040,
+        2430
+      ];
+      exports.getBlocksCount = function getBlocksCount(version, errorCorrectionLevel) {
+        switch (errorCorrectionLevel) {
+          case ECLevel.L:
+            return EC_BLOCKS_TABLE[(version - 1) * 4 + 0];
+          case ECLevel.M:
+            return EC_BLOCKS_TABLE[(version - 1) * 4 + 1];
+          case ECLevel.Q:
+            return EC_BLOCKS_TABLE[(version - 1) * 4 + 2];
+          case ECLevel.H:
+            return EC_BLOCKS_TABLE[(version - 1) * 4 + 3];
+          default:
+            return void 0;
+        }
+      };
+      exports.getTotalCodewordsCount = function getTotalCodewordsCount(version, errorCorrectionLevel) {
+        switch (errorCorrectionLevel) {
+          case ECLevel.L:
+            return EC_CODEWORDS_TABLE[(version - 1) * 4 + 0];
+          case ECLevel.M:
+            return EC_CODEWORDS_TABLE[(version - 1) * 4 + 1];
+          case ECLevel.Q:
+            return EC_CODEWORDS_TABLE[(version - 1) * 4 + 2];
+          case ECLevel.H:
+            return EC_CODEWORDS_TABLE[(version - 1) * 4 + 3];
+          default:
+            return void 0;
+        }
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/galois-field.js
+  var require_galois_field = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/galois-field.js"(exports) {
+      var EXP_TABLE = new Uint8Array(512);
+      var LOG_TABLE = new Uint8Array(256);
+      (function initTables() {
+        let x = 1;
+        for (let i = 0; i < 255; i++) {
+          EXP_TABLE[i] = x;
+          LOG_TABLE[x] = i;
+          x <<= 1;
+          if (x & 256) {
+            x ^= 285;
+          }
+        }
+        for (let i = 255; i < 512; i++) {
+          EXP_TABLE[i] = EXP_TABLE[i - 255];
+        }
+      })();
+      exports.log = function log(n) {
+        if (n < 1) throw new Error("log(" + n + ")");
+        return LOG_TABLE[n];
+      };
+      exports.exp = function exp(n) {
+        return EXP_TABLE[n];
+      };
+      exports.mul = function mul(x, y) {
+        if (x === 0 || y === 0) return 0;
+        return EXP_TABLE[LOG_TABLE[x] + LOG_TABLE[y]];
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/polynomial.js
+  var require_polynomial = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/polynomial.js"(exports) {
+      var GF = require_galois_field();
+      exports.mul = function mul(p1, p2) {
+        const coeff = new Uint8Array(p1.length + p2.length - 1);
+        for (let i = 0; i < p1.length; i++) {
+          for (let j = 0; j < p2.length; j++) {
+            coeff[i + j] ^= GF.mul(p1[i], p2[j]);
+          }
+        }
+        return coeff;
+      };
+      exports.mod = function mod(divident, divisor) {
+        let result = new Uint8Array(divident);
+        while (result.length - divisor.length >= 0) {
+          const coeff = result[0];
+          for (let i = 0; i < divisor.length; i++) {
+            result[i] ^= GF.mul(divisor[i], coeff);
+          }
+          let offset = 0;
+          while (offset < result.length && result[offset] === 0) offset++;
+          result = result.slice(offset);
+        }
+        return result;
+      };
+      exports.generateECPolynomial = function generateECPolynomial(degree) {
+        let poly = new Uint8Array([1]);
+        for (let i = 0; i < degree; i++) {
+          poly = exports.mul(poly, new Uint8Array([1, GF.exp(i)]));
+        }
+        return poly;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/reed-solomon-encoder.js
+  var require_reed_solomon_encoder = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/reed-solomon-encoder.js"(exports, module) {
+      var Polynomial = require_polynomial();
+      function ReedSolomonEncoder(degree) {
+        this.genPoly = void 0;
+        this.degree = degree;
+        if (this.degree) this.initialize(this.degree);
+      }
+      ReedSolomonEncoder.prototype.initialize = function initialize(degree) {
+        this.degree = degree;
+        this.genPoly = Polynomial.generateECPolynomial(this.degree);
+      };
+      ReedSolomonEncoder.prototype.encode = function encode(data) {
+        if (!this.genPoly) {
+          throw new Error("Encoder not initialized");
+        }
+        const paddedData = new Uint8Array(data.length + this.degree);
+        paddedData.set(data);
+        const remainder = Polynomial.mod(paddedData, this.genPoly);
+        const start = this.degree - remainder.length;
+        if (start > 0) {
+          const buff = new Uint8Array(this.degree);
+          buff.set(remainder, start);
+          return buff;
+        }
+        return remainder;
+      };
+      module.exports = ReedSolomonEncoder;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/version-check.js
+  var require_version_check = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/version-check.js"(exports) {
+      exports.isValid = function isValid(version) {
+        return !isNaN(version) && version >= 1 && version <= 40;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/regex.js
+  var require_regex = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/regex.js"(exports) {
+      var numeric = "[0-9]+";
+      var alphanumeric = "[A-Z $%*+\\-./:]+";
+      var kanji = "(?:[u3000-u303F]|[u3040-u309F]|[u30A0-u30FF]|[uFF00-uFFEF]|[u4E00-u9FAF]|[u2605-u2606]|[u2190-u2195]|u203B|[u2010u2015u2018u2019u2025u2026u201Cu201Du2225u2260]|[u0391-u0451]|[u00A7u00A8u00B1u00B4u00D7u00F7])+";
+      kanji = kanji.replace(/u/g, "\\u");
+      var byte = "(?:(?![A-Z0-9 $%*+\\-./:]|" + kanji + ")(?:.|[\r\n]))+";
+      exports.KANJI = new RegExp(kanji, "g");
+      exports.BYTE_KANJI = new RegExp("[^A-Z0-9 $%*+\\-./:]+", "g");
+      exports.BYTE = new RegExp(byte, "g");
+      exports.NUMERIC = new RegExp(numeric, "g");
+      exports.ALPHANUMERIC = new RegExp(alphanumeric, "g");
+      var TEST_KANJI = new RegExp("^" + kanji + "$");
+      var TEST_NUMERIC = new RegExp("^" + numeric + "$");
+      var TEST_ALPHANUMERIC = new RegExp("^[A-Z0-9 $%*+\\-./:]+$");
+      exports.testKanji = function testKanji(str) {
+        return TEST_KANJI.test(str);
+      };
+      exports.testNumeric = function testNumeric(str) {
+        return TEST_NUMERIC.test(str);
+      };
+      exports.testAlphanumeric = function testAlphanumeric(str) {
+        return TEST_ALPHANUMERIC.test(str);
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/mode.js
+  var require_mode = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/mode.js"(exports) {
+      var VersionCheck = require_version_check();
+      var Regex = require_regex();
+      exports.NUMERIC = {
+        id: "Numeric",
+        bit: 1 << 0,
+        ccBits: [10, 12, 14]
+      };
+      exports.ALPHANUMERIC = {
+        id: "Alphanumeric",
+        bit: 1 << 1,
+        ccBits: [9, 11, 13]
+      };
+      exports.BYTE = {
+        id: "Byte",
+        bit: 1 << 2,
+        ccBits: [8, 16, 16]
+      };
+      exports.KANJI = {
+        id: "Kanji",
+        bit: 1 << 3,
+        ccBits: [8, 10, 12]
+      };
+      exports.MIXED = {
+        bit: -1
+      };
+      exports.getCharCountIndicator = function getCharCountIndicator(mode, version) {
+        if (!mode.ccBits) throw new Error("Invalid mode: " + mode);
+        if (!VersionCheck.isValid(version)) {
+          throw new Error("Invalid version: " + version);
+        }
+        if (version >= 1 && version < 10) return mode.ccBits[0];
+        else if (version < 27) return mode.ccBits[1];
+        return mode.ccBits[2];
+      };
+      exports.getBestModeForData = function getBestModeForData(dataStr) {
+        if (Regex.testNumeric(dataStr)) return exports.NUMERIC;
+        else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC;
+        else if (Regex.testKanji(dataStr)) return exports.KANJI;
+        else return exports.BYTE;
+      };
+      exports.toString = function toString(mode) {
+        if (mode && mode.id) return mode.id;
+        throw new Error("Invalid mode");
+      };
+      exports.isValid = function isValid(mode) {
+        return mode && mode.bit && mode.ccBits;
+      };
+      function fromString(string) {
+        if (typeof string !== "string") {
+          throw new Error("Param is not a string");
+        }
+        const lcStr = string.toLowerCase();
+        switch (lcStr) {
+          case "numeric":
+            return exports.NUMERIC;
+          case "alphanumeric":
+            return exports.ALPHANUMERIC;
+          case "kanji":
+            return exports.KANJI;
+          case "byte":
+            return exports.BYTE;
+          default:
+            throw new Error("Unknown mode: " + string);
+        }
+      }
+      exports.from = function from(value, defaultValue) {
+        if (exports.isValid(value)) {
+          return value;
+        }
+        try {
+          return fromString(value);
+        } catch (e) {
+          return defaultValue;
+        }
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/version.js
+  var require_version = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/version.js"(exports) {
+      var Utils = require_utils();
+      var ECCode = require_error_correction_code();
+      var ECLevel = require_error_correction_level();
+      var Mode = require_mode();
+      var VersionCheck = require_version_check();
+      var G18 = 1 << 12 | 1 << 11 | 1 << 10 | 1 << 9 | 1 << 8 | 1 << 5 | 1 << 2 | 1 << 0;
+      var G18_BCH = Utils.getBCHDigit(G18);
+      function getBestVersionForDataLength(mode, length, errorCorrectionLevel) {
+        for (let currentVersion = 1; currentVersion <= 40; currentVersion++) {
+          if (length <= exports.getCapacity(currentVersion, errorCorrectionLevel, mode)) {
+            return currentVersion;
+          }
+        }
+        return void 0;
+      }
+      function getReservedBitsCount(mode, version) {
+        return Mode.getCharCountIndicator(mode, version) + 4;
+      }
+      function getTotalBitsFromDataArray(segments, version) {
+        let totalBits = 0;
+        segments.forEach(function(data) {
+          const reservedBits = getReservedBitsCount(data.mode, version);
+          totalBits += reservedBits + data.getBitsLength();
+        });
+        return totalBits;
+      }
+      function getBestVersionForMixedData(segments, errorCorrectionLevel) {
+        for (let currentVersion = 1; currentVersion <= 40; currentVersion++) {
+          const length = getTotalBitsFromDataArray(segments, currentVersion);
+          if (length <= exports.getCapacity(currentVersion, errorCorrectionLevel, Mode.MIXED)) {
+            return currentVersion;
+          }
+        }
+        return void 0;
+      }
+      exports.from = function from(value, defaultValue) {
+        if (VersionCheck.isValid(value)) {
+          return parseInt(value, 10);
+        }
+        return defaultValue;
+      };
+      exports.getCapacity = function getCapacity(version, errorCorrectionLevel, mode) {
+        if (!VersionCheck.isValid(version)) {
+          throw new Error("Invalid QR Code version");
+        }
+        if (typeof mode === "undefined") mode = Mode.BYTE;
+        const totalCodewords = Utils.getSymbolTotalCodewords(version);
+        const ecTotalCodewords = ECCode.getTotalCodewordsCount(version, errorCorrectionLevel);
+        const dataTotalCodewordsBits = (totalCodewords - ecTotalCodewords) * 8;
+        if (mode === Mode.MIXED) return dataTotalCodewordsBits;
+        const usableBits = dataTotalCodewordsBits - getReservedBitsCount(mode, version);
+        switch (mode) {
+          case Mode.NUMERIC:
+            return Math.floor(usableBits / 10 * 3);
+          case Mode.ALPHANUMERIC:
+            return Math.floor(usableBits / 11 * 2);
+          case Mode.KANJI:
+            return Math.floor(usableBits / 13);
+          case Mode.BYTE:
+          default:
+            return Math.floor(usableBits / 8);
+        }
+      };
+      exports.getBestVersionForData = function getBestVersionForData(data, errorCorrectionLevel) {
+        let seg;
+        const ecl = ECLevel.from(errorCorrectionLevel, ECLevel.M);
+        if (Array.isArray(data)) {
+          if (data.length > 1) {
+            return getBestVersionForMixedData(data, ecl);
+          }
+          if (data.length === 0) {
+            return 1;
+          }
+          seg = data[0];
+        } else {
+          seg = data;
+        }
+        return getBestVersionForDataLength(seg.mode, seg.getLength(), ecl);
+      };
+      exports.getEncodedBits = function getEncodedBits(version) {
+        if (!VersionCheck.isValid(version) || version < 7) {
+          throw new Error("Invalid QR Code version");
+        }
+        let d = version << 12;
+        while (Utils.getBCHDigit(d) - G18_BCH >= 0) {
+          d ^= G18 << Utils.getBCHDigit(d) - G18_BCH;
+        }
+        return version << 12 | d;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/format-info.js
+  var require_format_info = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/format-info.js"(exports) {
+      var Utils = require_utils();
+      var G15 = 1 << 10 | 1 << 8 | 1 << 5 | 1 << 4 | 1 << 2 | 1 << 1 | 1 << 0;
+      var G15_MASK = 1 << 14 | 1 << 12 | 1 << 10 | 1 << 4 | 1 << 1;
+      var G15_BCH = Utils.getBCHDigit(G15);
+      exports.getEncodedBits = function getEncodedBits(errorCorrectionLevel, mask) {
+        const data = errorCorrectionLevel.bit << 3 | mask;
+        let d = data << 10;
+        while (Utils.getBCHDigit(d) - G15_BCH >= 0) {
+          d ^= G15 << Utils.getBCHDigit(d) - G15_BCH;
+        }
+        return (data << 10 | d) ^ G15_MASK;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/numeric-data.js
+  var require_numeric_data = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/numeric-data.js"(exports, module) {
+      var Mode = require_mode();
+      function NumericData(data) {
+        this.mode = Mode.NUMERIC;
+        this.data = data.toString();
+      }
+      NumericData.getBitsLength = function getBitsLength(length) {
+        return 10 * Math.floor(length / 3) + (length % 3 ? length % 3 * 3 + 1 : 0);
+      };
+      NumericData.prototype.getLength = function getLength() {
+        return this.data.length;
+      };
+      NumericData.prototype.getBitsLength = function getBitsLength() {
+        return NumericData.getBitsLength(this.data.length);
+      };
+      NumericData.prototype.write = function write(bitBuffer) {
+        let i, group, value;
+        for (i = 0; i + 3 <= this.data.length; i += 3) {
+          group = this.data.substr(i, 3);
+          value = parseInt(group, 10);
+          bitBuffer.put(value, 10);
+        }
+        const remainingNum = this.data.length - i;
+        if (remainingNum > 0) {
+          group = this.data.substr(i);
+          value = parseInt(group, 10);
+          bitBuffer.put(value, remainingNum * 3 + 1);
+        }
+      };
+      module.exports = NumericData;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/alphanumeric-data.js
+  var require_alphanumeric_data = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/alphanumeric-data.js"(exports, module) {
+      var Mode = require_mode();
+      var ALPHA_NUM_CHARS = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        " ",
+        "$",
+        "%",
+        "*",
+        "+",
+        "-",
+        ".",
+        "/",
+        ":"
+      ];
+      function AlphanumericData(data) {
+        this.mode = Mode.ALPHANUMERIC;
+        this.data = data;
+      }
+      AlphanumericData.getBitsLength = function getBitsLength(length) {
+        return 11 * Math.floor(length / 2) + 6 * (length % 2);
+      };
+      AlphanumericData.prototype.getLength = function getLength() {
+        return this.data.length;
+      };
+      AlphanumericData.prototype.getBitsLength = function getBitsLength() {
+        return AlphanumericData.getBitsLength(this.data.length);
+      };
+      AlphanumericData.prototype.write = function write(bitBuffer) {
+        let i;
+        for (i = 0; i + 2 <= this.data.length; i += 2) {
+          let value = ALPHA_NUM_CHARS.indexOf(this.data[i]) * 45;
+          value += ALPHA_NUM_CHARS.indexOf(this.data[i + 1]);
+          bitBuffer.put(value, 11);
+        }
+        if (this.data.length % 2) {
+          bitBuffer.put(ALPHA_NUM_CHARS.indexOf(this.data[i]), 6);
+        }
+      };
+      module.exports = AlphanumericData;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/byte-data.js
+  var require_byte_data = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/byte-data.js"(exports, module) {
+      var Mode = require_mode();
+      function ByteData(data) {
+        this.mode = Mode.BYTE;
+        if (typeof data === "string") {
+          this.data = new TextEncoder().encode(data);
+        } else {
+          this.data = new Uint8Array(data);
+        }
+      }
+      ByteData.getBitsLength = function getBitsLength(length) {
+        return length * 8;
+      };
+      ByteData.prototype.getLength = function getLength() {
+        return this.data.length;
+      };
+      ByteData.prototype.getBitsLength = function getBitsLength() {
+        return ByteData.getBitsLength(this.data.length);
+      };
+      ByteData.prototype.write = function(bitBuffer) {
+        for (let i = 0, l = this.data.length; i < l; i++) {
+          bitBuffer.put(this.data[i], 8);
+        }
+      };
+      module.exports = ByteData;
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/kanji-data.js
+  var require_kanji_data = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/kanji-data.js"(exports, module) {
+      var Mode = require_mode();
+      var Utils = require_utils();
+      function KanjiData(data) {
+        this.mode = Mode.KANJI;
+        this.data = data;
+      }
+      KanjiData.getBitsLength = function getBitsLength(length) {
+        return length * 13;
+      };
+      KanjiData.prototype.getLength = function getLength() {
+        return this.data.length;
+      };
+      KanjiData.prototype.getBitsLength = function getBitsLength() {
+        return KanjiData.getBitsLength(this.data.length);
+      };
+      KanjiData.prototype.write = function(bitBuffer) {
+        let i;
+        for (i = 0; i < this.data.length; i++) {
+          let value = Utils.toSJIS(this.data[i]);
+          if (value >= 33088 && value <= 40956) {
+            value -= 33088;
+          } else if (value >= 57408 && value <= 60351) {
+            value -= 49472;
+          } else {
+            throw new Error(
+              "Invalid SJIS character: " + this.data[i] + "\nMake sure your charset is UTF-8"
+            );
+          }
+          value = (value >>> 8 & 255) * 192 + (value & 255);
+          bitBuffer.put(value, 13);
+        }
+      };
+      module.exports = KanjiData;
+    }
+  });
+
+  // tmp/npmenv/node_modules/dijkstrajs/dijkstra.js
+  var require_dijkstra = __commonJS({
+    "tmp/npmenv/node_modules/dijkstrajs/dijkstra.js"(exports, module) {
+      "use strict";
+      var dijkstra = {
+        single_source_shortest_paths: function(graph, s, d) {
+          var predecessors = {};
+          var costs = {};
+          costs[s] = 0;
+          var open = dijkstra.PriorityQueue.make();
+          open.push(s, 0);
+          var closest, u, v, cost_of_s_to_u, adjacent_nodes, cost_of_e, cost_of_s_to_u_plus_cost_of_e, cost_of_s_to_v, first_visit;
+          while (!open.empty()) {
+            closest = open.pop();
+            u = closest.value;
+            cost_of_s_to_u = closest.cost;
+            adjacent_nodes = graph[u] || {};
+            for (v in adjacent_nodes) {
+              if (adjacent_nodes.hasOwnProperty(v)) {
+                cost_of_e = adjacent_nodes[v];
+                cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e;
+                cost_of_s_to_v = costs[v];
+                first_visit = typeof costs[v] === "undefined";
+                if (first_visit || cost_of_s_to_v > cost_of_s_to_u_plus_cost_of_e) {
+                  costs[v] = cost_of_s_to_u_plus_cost_of_e;
+                  open.push(v, cost_of_s_to_u_plus_cost_of_e);
+                  predecessors[v] = u;
+                }
+              }
+            }
+          }
+          if (typeof d !== "undefined" && typeof costs[d] === "undefined") {
+            var msg = ["Could not find a path from ", s, " to ", d, "."].join("");
+            throw new Error(msg);
+          }
+          return predecessors;
+        },
+        extract_shortest_path_from_predecessor_list: function(predecessors, d) {
+          var nodes = [];
+          var u = d;
+          var predecessor;
+          while (u) {
+            nodes.push(u);
+            predecessor = predecessors[u];
+            u = predecessors[u];
+          }
+          nodes.reverse();
+          return nodes;
+        },
+        find_path: function(graph, s, d) {
+          var predecessors = dijkstra.single_source_shortest_paths(graph, s, d);
+          return dijkstra.extract_shortest_path_from_predecessor_list(
+            predecessors,
+            d
+          );
+        },
+        /**
+         * A very naive priority queue implementation.
+         */
+        PriorityQueue: {
+          make: function(opts) {
+            var T = dijkstra.PriorityQueue, t = {}, key;
+            opts = opts || {};
+            for (key in T) {
+              if (T.hasOwnProperty(key)) {
+                t[key] = T[key];
+              }
+            }
+            t.queue = [];
+            t.sorter = opts.sorter || T.default_sorter;
+            return t;
+          },
+          default_sorter: function(a, b) {
+            return a.cost - b.cost;
+          },
+          /**
+           * Add a new item to the queue and ensure the highest priority element
+           * is at the front of the queue.
+           */
+          push: function(value, cost) {
+            var item = { value, cost };
+            this.queue.push(item);
+            this.queue.sort(this.sorter);
+          },
+          /**
+           * Return the highest priority element in the queue.
+           */
+          pop: function() {
+            return this.queue.shift();
+          },
+          empty: function() {
+            return this.queue.length === 0;
+          }
+        }
+      };
+      if (typeof module !== "undefined") {
+        module.exports = dijkstra;
+      }
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/segments.js
+  var require_segments = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/segments.js"(exports) {
+      var Mode = require_mode();
+      var NumericData = require_numeric_data();
+      var AlphanumericData = require_alphanumeric_data();
+      var ByteData = require_byte_data();
+      var KanjiData = require_kanji_data();
+      var Regex = require_regex();
+      var Utils = require_utils();
+      var dijkstra = require_dijkstra();
+      function getStringByteLength(str) {
+        return unescape(encodeURIComponent(str)).length;
+      }
+      function getSegments(regex, mode, str) {
+        const segments = [];
+        let result;
+        while ((result = regex.exec(str)) !== null) {
+          segments.push({
+            data: result[0],
+            index: result.index,
+            mode,
+            length: result[0].length
+          });
+        }
+        return segments;
+      }
+      function getSegmentsFromString(dataStr) {
+        const numSegs = getSegments(Regex.NUMERIC, Mode.NUMERIC, dataStr);
+        const alphaNumSegs = getSegments(Regex.ALPHANUMERIC, Mode.ALPHANUMERIC, dataStr);
+        let byteSegs;
+        let kanjiSegs;
+        if (Utils.isKanjiModeEnabled()) {
+          byteSegs = getSegments(Regex.BYTE, Mode.BYTE, dataStr);
+          kanjiSegs = getSegments(Regex.KANJI, Mode.KANJI, dataStr);
+        } else {
+          byteSegs = getSegments(Regex.BYTE_KANJI, Mode.BYTE, dataStr);
+          kanjiSegs = [];
+        }
+        const segs = numSegs.concat(alphaNumSegs, byteSegs, kanjiSegs);
+        return segs.sort(function(s1, s2) {
+          return s1.index - s2.index;
+        }).map(function(obj) {
+          return {
+            data: obj.data,
+            mode: obj.mode,
+            length: obj.length
+          };
+        });
+      }
+      function getSegmentBitsLength(length, mode) {
+        switch (mode) {
+          case Mode.NUMERIC:
+            return NumericData.getBitsLength(length);
+          case Mode.ALPHANUMERIC:
+            return AlphanumericData.getBitsLength(length);
+          case Mode.KANJI:
+            return KanjiData.getBitsLength(length);
+          case Mode.BYTE:
+            return ByteData.getBitsLength(length);
+        }
+      }
+      function mergeSegments(segs) {
+        return segs.reduce(function(acc, curr) {
+          const prevSeg = acc.length - 1 >= 0 ? acc[acc.length - 1] : null;
+          if (prevSeg && prevSeg.mode === curr.mode) {
+            acc[acc.length - 1].data += curr.data;
+            return acc;
+          }
+          acc.push(curr);
+          return acc;
+        }, []);
+      }
+      function buildNodes(segs) {
+        const nodes = [];
+        for (let i = 0; i < segs.length; i++) {
+          const seg = segs[i];
+          switch (seg.mode) {
+            case Mode.NUMERIC:
+              nodes.push([
+                seg,
+                { data: seg.data, mode: Mode.ALPHANUMERIC, length: seg.length },
+                { data: seg.data, mode: Mode.BYTE, length: seg.length }
+              ]);
+              break;
+            case Mode.ALPHANUMERIC:
+              nodes.push([
+                seg,
+                { data: seg.data, mode: Mode.BYTE, length: seg.length }
+              ]);
+              break;
+            case Mode.KANJI:
+              nodes.push([
+                seg,
+                { data: seg.data, mode: Mode.BYTE, length: getStringByteLength(seg.data) }
+              ]);
+              break;
+            case Mode.BYTE:
+              nodes.push([
+                { data: seg.data, mode: Mode.BYTE, length: getStringByteLength(seg.data) }
+              ]);
+          }
+        }
+        return nodes;
+      }
+      function buildGraph(nodes, version) {
+        const table = {};
+        const graph = { start: {} };
+        let prevNodeIds = ["start"];
+        for (let i = 0; i < nodes.length; i++) {
+          const nodeGroup = nodes[i];
+          const currentNodeIds = [];
+          for (let j = 0; j < nodeGroup.length; j++) {
+            const node = nodeGroup[j];
+            const key = "" + i + j;
+            currentNodeIds.push(key);
+            table[key] = { node, lastCount: 0 };
+            graph[key] = {};
+            for (let n = 0; n < prevNodeIds.length; n++) {
+              const prevNodeId = prevNodeIds[n];
+              if (table[prevNodeId] && table[prevNodeId].node.mode === node.mode) {
+                graph[prevNodeId][key] = getSegmentBitsLength(table[prevNodeId].lastCount + node.length, node.mode) - getSegmentBitsLength(table[prevNodeId].lastCount, node.mode);
+                table[prevNodeId].lastCount += node.length;
+              } else {
+                if (table[prevNodeId]) table[prevNodeId].lastCount = node.length;
+                graph[prevNodeId][key] = getSegmentBitsLength(node.length, node.mode) + 4 + Mode.getCharCountIndicator(node.mode, version);
+              }
+            }
+          }
+          prevNodeIds = currentNodeIds;
+        }
+        for (let n = 0; n < prevNodeIds.length; n++) {
+          graph[prevNodeIds[n]].end = 0;
+        }
+        return { map: graph, table };
+      }
+      function buildSingleSegment(data, modesHint) {
+        let mode;
+        const bestMode = Mode.getBestModeForData(data);
+        mode = Mode.from(modesHint, bestMode);
+        if (mode !== Mode.BYTE && mode.bit < bestMode.bit) {
+          throw new Error('"' + data + '" cannot be encoded with mode ' + Mode.toString(mode) + ".\n Suggested mode is: " + Mode.toString(bestMode));
+        }
+        if (mode === Mode.KANJI && !Utils.isKanjiModeEnabled()) {
+          mode = Mode.BYTE;
+        }
+        switch (mode) {
+          case Mode.NUMERIC:
+            return new NumericData(data);
+          case Mode.ALPHANUMERIC:
+            return new AlphanumericData(data);
+          case Mode.KANJI:
+            return new KanjiData(data);
+          case Mode.BYTE:
+            return new ByteData(data);
+        }
+      }
+      exports.fromArray = function fromArray(array) {
+        return array.reduce(function(acc, seg) {
+          if (typeof seg === "string") {
+            acc.push(buildSingleSegment(seg, null));
+          } else if (seg.data) {
+            acc.push(buildSingleSegment(seg.data, seg.mode));
+          }
+          return acc;
+        }, []);
+      };
+      exports.fromString = function fromString(data, version) {
+        const segs = getSegmentsFromString(data, Utils.isKanjiModeEnabled());
+        const nodes = buildNodes(segs);
+        const graph = buildGraph(nodes, version);
+        const path = dijkstra.find_path(graph.map, "start", "end");
+        const optimizedSegs = [];
+        for (let i = 1; i < path.length - 1; i++) {
+          optimizedSegs.push(graph.table[path[i]].node);
+        }
+        return exports.fromArray(mergeSegments(optimizedSegs));
+      };
+      exports.rawSplit = function rawSplit(data) {
+        return exports.fromArray(
+          getSegmentsFromString(data, Utils.isKanjiModeEnabled())
+        );
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/core/qrcode.js
+  var require_qrcode = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/core/qrcode.js"(exports) {
+      var Utils = require_utils();
+      var ECLevel = require_error_correction_level();
+      var BitBuffer = require_bit_buffer();
+      var BitMatrix = require_bit_matrix();
+      var AlignmentPattern = require_alignment_pattern();
+      var FinderPattern = require_finder_pattern();
+      var MaskPattern = require_mask_pattern();
+      var ECCode = require_error_correction_code();
+      var ReedSolomonEncoder = require_reed_solomon_encoder();
+      var Version = require_version();
+      var FormatInfo = require_format_info();
+      var Mode = require_mode();
+      var Segments = require_segments();
+      function setupFinderPattern(matrix, version) {
+        const size = matrix.size;
+        const pos = FinderPattern.getPositions(version);
+        for (let i = 0; i < pos.length; i++) {
+          const row = pos[i][0];
+          const col = pos[i][1];
+          for (let r = -1; r <= 7; r++) {
+            if (row + r <= -1 || size <= row + r) continue;
+            for (let c = -1; c <= 7; c++) {
+              if (col + c <= -1 || size <= col + c) continue;
+              if (r >= 0 && r <= 6 && (c === 0 || c === 6) || c >= 0 && c <= 6 && (r === 0 || r === 6) || r >= 2 && r <= 4 && c >= 2 && c <= 4) {
+                matrix.set(row + r, col + c, true, true);
+              } else {
+                matrix.set(row + r, col + c, false, true);
+              }
+            }
+          }
+        }
+      }
+      function setupTimingPattern(matrix) {
+        const size = matrix.size;
+        for (let r = 8; r < size - 8; r++) {
+          const value = r % 2 === 0;
+          matrix.set(r, 6, value, true);
+          matrix.set(6, r, value, true);
+        }
+      }
+      function setupAlignmentPattern(matrix, version) {
+        const pos = AlignmentPattern.getPositions(version);
+        for (let i = 0; i < pos.length; i++) {
+          const row = pos[i][0];
+          const col = pos[i][1];
+          for (let r = -2; r <= 2; r++) {
+            for (let c = -2; c <= 2; c++) {
+              if (r === -2 || r === 2 || c === -2 || c === 2 || r === 0 && c === 0) {
+                matrix.set(row + r, col + c, true, true);
+              } else {
+                matrix.set(row + r, col + c, false, true);
+              }
+            }
+          }
+        }
+      }
+      function setupVersionInfo(matrix, version) {
+        const size = matrix.size;
+        const bits = Version.getEncodedBits(version);
+        let row, col, mod;
+        for (let i = 0; i < 18; i++) {
+          row = Math.floor(i / 3);
+          col = i % 3 + size - 8 - 3;
+          mod = (bits >> i & 1) === 1;
+          matrix.set(row, col, mod, true);
+          matrix.set(col, row, mod, true);
+        }
+      }
+      function setupFormatInfo(matrix, errorCorrectionLevel, maskPattern) {
+        const size = matrix.size;
+        const bits = FormatInfo.getEncodedBits(errorCorrectionLevel, maskPattern);
+        let i, mod;
+        for (i = 0; i < 15; i++) {
+          mod = (bits >> i & 1) === 1;
+          if (i < 6) {
+            matrix.set(i, 8, mod, true);
+          } else if (i < 8) {
+            matrix.set(i + 1, 8, mod, true);
+          } else {
+            matrix.set(size - 15 + i, 8, mod, true);
+          }
+          if (i < 8) {
+            matrix.set(8, size - i - 1, mod, true);
+          } else if (i < 9) {
+            matrix.set(8, 15 - i - 1 + 1, mod, true);
+          } else {
+            matrix.set(8, 15 - i - 1, mod, true);
+          }
+        }
+        matrix.set(size - 8, 8, 1, true);
+      }
+      function setupData(matrix, data) {
+        const size = matrix.size;
+        let inc = -1;
+        let row = size - 1;
+        let bitIndex = 7;
+        let byteIndex = 0;
+        for (let col = size - 1; col > 0; col -= 2) {
+          if (col === 6) col--;
+          while (true) {
+            for (let c = 0; c < 2; c++) {
+              if (!matrix.isReserved(row, col - c)) {
+                let dark = false;
+                if (byteIndex < data.length) {
+                  dark = (data[byteIndex] >>> bitIndex & 1) === 1;
+                }
+                matrix.set(row, col - c, dark);
+                bitIndex--;
+                if (bitIndex === -1) {
+                  byteIndex++;
+                  bitIndex = 7;
+                }
+              }
+            }
+            row += inc;
+            if (row < 0 || size <= row) {
+              row -= inc;
+              inc = -inc;
+              break;
+            }
+          }
+        }
+      }
+      function createData(version, errorCorrectionLevel, segments) {
+        const buffer = new BitBuffer();
+        segments.forEach(function(data) {
+          buffer.put(data.mode.bit, 4);
+          buffer.put(data.getLength(), Mode.getCharCountIndicator(data.mode, version));
+          data.write(buffer);
+        });
+        const totalCodewords = Utils.getSymbolTotalCodewords(version);
+        const ecTotalCodewords = ECCode.getTotalCodewordsCount(version, errorCorrectionLevel);
+        const dataTotalCodewordsBits = (totalCodewords - ecTotalCodewords) * 8;
+        if (buffer.getLengthInBits() + 4 <= dataTotalCodewordsBits) {
+          buffer.put(0, 4);
+        }
+        while (buffer.getLengthInBits() % 8 !== 0) {
+          buffer.putBit(0);
+        }
+        const remainingByte = (dataTotalCodewordsBits - buffer.getLengthInBits()) / 8;
+        for (let i = 0; i < remainingByte; i++) {
+          buffer.put(i % 2 ? 17 : 236, 8);
+        }
+        return createCodewords(buffer, version, errorCorrectionLevel);
+      }
+      function createCodewords(bitBuffer, version, errorCorrectionLevel) {
+        const totalCodewords = Utils.getSymbolTotalCodewords(version);
+        const ecTotalCodewords = ECCode.getTotalCodewordsCount(version, errorCorrectionLevel);
+        const dataTotalCodewords = totalCodewords - ecTotalCodewords;
+        const ecTotalBlocks = ECCode.getBlocksCount(version, errorCorrectionLevel);
+        const blocksInGroup2 = totalCodewords % ecTotalBlocks;
+        const blocksInGroup1 = ecTotalBlocks - blocksInGroup2;
+        const totalCodewordsInGroup1 = Math.floor(totalCodewords / ecTotalBlocks);
+        const dataCodewordsInGroup1 = Math.floor(dataTotalCodewords / ecTotalBlocks);
+        const dataCodewordsInGroup2 = dataCodewordsInGroup1 + 1;
+        const ecCount = totalCodewordsInGroup1 - dataCodewordsInGroup1;
+        const rs = new ReedSolomonEncoder(ecCount);
+        let offset = 0;
+        const dcData = new Array(ecTotalBlocks);
+        const ecData = new Array(ecTotalBlocks);
+        let maxDataSize = 0;
+        const buffer = new Uint8Array(bitBuffer.buffer);
+        for (let b = 0; b < ecTotalBlocks; b++) {
+          const dataSize = b < blocksInGroup1 ? dataCodewordsInGroup1 : dataCodewordsInGroup2;
+          dcData[b] = buffer.slice(offset, offset + dataSize);
+          ecData[b] = rs.encode(dcData[b]);
+          offset += dataSize;
+          maxDataSize = Math.max(maxDataSize, dataSize);
+        }
+        const data = new Uint8Array(totalCodewords);
+        let index = 0;
+        let i, r;
+        for (i = 0; i < maxDataSize; i++) {
+          for (r = 0; r < ecTotalBlocks; r++) {
+            if (i < dcData[r].length) {
+              data[index++] = dcData[r][i];
+            }
+          }
+        }
+        for (i = 0; i < ecCount; i++) {
+          for (r = 0; r < ecTotalBlocks; r++) {
+            data[index++] = ecData[r][i];
+          }
+        }
+        return data;
+      }
+      function createSymbol(data, version, errorCorrectionLevel, maskPattern) {
+        let segments;
+        if (Array.isArray(data)) {
+          segments = Segments.fromArray(data);
+        } else if (typeof data === "string") {
+          let estimatedVersion = version;
+          if (!estimatedVersion) {
+            const rawSegments = Segments.rawSplit(data);
+            estimatedVersion = Version.getBestVersionForData(rawSegments, errorCorrectionLevel);
+          }
+          segments = Segments.fromString(data, estimatedVersion || 40);
+        } else {
+          throw new Error("Invalid data");
+        }
+        const bestVersion = Version.getBestVersionForData(segments, errorCorrectionLevel);
+        if (!bestVersion) {
+          throw new Error("The amount of data is too big to be stored in a QR Code");
+        }
+        if (!version) {
+          version = bestVersion;
+        } else if (version < bestVersion) {
+          throw new Error(
+            "\nThe chosen QR Code version cannot contain this amount of data.\nMinimum version required to store current data is: " + bestVersion + ".\n"
+          );
+        }
+        const dataBits = createData(version, errorCorrectionLevel, segments);
+        const moduleCount = Utils.getSymbolSize(version);
+        const modules = new BitMatrix(moduleCount);
+        setupFinderPattern(modules, version);
+        setupTimingPattern(modules);
+        setupAlignmentPattern(modules, version);
+        setupFormatInfo(modules, errorCorrectionLevel, 0);
+        if (version >= 7) {
+          setupVersionInfo(modules, version);
+        }
+        setupData(modules, dataBits);
+        if (isNaN(maskPattern)) {
+          maskPattern = MaskPattern.getBestMask(
+            modules,
+            setupFormatInfo.bind(null, modules, errorCorrectionLevel)
+          );
+        }
+        MaskPattern.applyMask(maskPattern, modules);
+        setupFormatInfo(modules, errorCorrectionLevel, maskPattern);
+        return {
+          modules,
+          version,
+          errorCorrectionLevel,
+          maskPattern,
+          segments
+        };
+      }
+      exports.create = function create(data, options) {
+        if (typeof data === "undefined" || data === "") {
+          throw new Error("No input text");
+        }
+        let errorCorrectionLevel = ECLevel.M;
+        let version;
+        let mask;
+        if (typeof options !== "undefined") {
+          errorCorrectionLevel = ECLevel.from(options.errorCorrectionLevel, ECLevel.M);
+          version = Version.from(options.version);
+          mask = MaskPattern.from(options.maskPattern);
+          if (options.toSJISFunc) {
+            Utils.setToSJISFunction(options.toSJISFunc);
+          }
+        }
+        return createSymbol(data, version, errorCorrectionLevel, mask);
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/renderer/utils.js
+  var require_utils2 = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/renderer/utils.js"(exports) {
+      function hex2rgba(hex) {
+        if (typeof hex === "number") {
+          hex = hex.toString();
+        }
+        if (typeof hex !== "string") {
+          throw new Error("Color should be defined as hex string");
+        }
+        let hexCode = hex.slice().replace("#", "").split("");
+        if (hexCode.length < 3 || hexCode.length === 5 || hexCode.length > 8) {
+          throw new Error("Invalid hex color: " + hex);
+        }
+        if (hexCode.length === 3 || hexCode.length === 4) {
+          hexCode = Array.prototype.concat.apply([], hexCode.map(function(c) {
+            return [c, c];
+          }));
+        }
+        if (hexCode.length === 6) hexCode.push("F", "F");
+        const hexValue = parseInt(hexCode.join(""), 16);
+        return {
+          r: hexValue >> 24 & 255,
+          g: hexValue >> 16 & 255,
+          b: hexValue >> 8 & 255,
+          a: hexValue & 255,
+          hex: "#" + hexCode.slice(0, 6).join("")
+        };
+      }
+      exports.getOptions = function getOptions(options) {
+        if (!options) options = {};
+        if (!options.color) options.color = {};
+        const margin = typeof options.margin === "undefined" || options.margin === null || options.margin < 0 ? 4 : options.margin;
+        const width = options.width && options.width >= 21 ? options.width : void 0;
+        const scale = options.scale || 4;
+        return {
+          width,
+          scale: width ? 4 : scale,
+          margin,
+          color: {
+            dark: hex2rgba(options.color.dark || "#000000ff"),
+            light: hex2rgba(options.color.light || "#ffffffff")
+          },
+          type: options.type,
+          rendererOpts: options.rendererOpts || {}
+        };
+      };
+      exports.getScale = function getScale(qrSize, opts) {
+        return opts.width && opts.width >= qrSize + opts.margin * 2 ? opts.width / (qrSize + opts.margin * 2) : opts.scale;
+      };
+      exports.getImageWidth = function getImageWidth(qrSize, opts) {
+        const scale = exports.getScale(qrSize, opts);
+        return Math.floor((qrSize + opts.margin * 2) * scale);
+      };
+      exports.qrToImageData = function qrToImageData(imgData, qr, opts) {
+        const size = qr.modules.size;
+        const data = qr.modules.data;
+        const scale = exports.getScale(size, opts);
+        const symbolSize = Math.floor((size + opts.margin * 2) * scale);
+        const scaledMargin = opts.margin * scale;
+        const palette = [opts.color.light, opts.color.dark];
+        for (let i = 0; i < symbolSize; i++) {
+          for (let j = 0; j < symbolSize; j++) {
+            let posDst = (i * symbolSize + j) * 4;
+            let pxColor = opts.color.light;
+            if (i >= scaledMargin && j >= scaledMargin && i < symbolSize - scaledMargin && j < symbolSize - scaledMargin) {
+              const iSrc = Math.floor((i - scaledMargin) / scale);
+              const jSrc = Math.floor((j - scaledMargin) / scale);
+              pxColor = palette[data[iSrc * size + jSrc] ? 1 : 0];
+            }
+            imgData[posDst++] = pxColor.r;
+            imgData[posDst++] = pxColor.g;
+            imgData[posDst++] = pxColor.b;
+            imgData[posDst] = pxColor.a;
+          }
+        }
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/renderer/canvas.js
+  var require_canvas = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/renderer/canvas.js"(exports) {
+      var Utils = require_utils2();
+      function clearCanvas(ctx, canvas, size) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!canvas.style) canvas.style = {};
+        canvas.height = size;
+        canvas.width = size;
+        canvas.style.height = size + "px";
+        canvas.style.width = size + "px";
+      }
+      function getCanvasElement() {
+        try {
+          return document.createElement("canvas");
+        } catch (e) {
+          throw new Error("You need to specify a canvas element");
+        }
+      }
+      exports.render = function render(qrData, canvas, options) {
+        let opts = options;
+        let canvasEl = canvas;
+        if (typeof opts === "undefined" && (!canvas || !canvas.getContext)) {
+          opts = canvas;
+          canvas = void 0;
+        }
+        if (!canvas) {
+          canvasEl = getCanvasElement();
+        }
+        opts = Utils.getOptions(opts);
+        const size = Utils.getImageWidth(qrData.modules.size, opts);
+        const ctx = canvasEl.getContext("2d");
+        const image = ctx.createImageData(size, size);
+        Utils.qrToImageData(image.data, qrData, opts);
+        clearCanvas(ctx, canvasEl, size);
+        ctx.putImageData(image, 0, 0);
+        return canvasEl;
+      };
+      exports.renderToDataURL = function renderToDataURL(qrData, canvas, options) {
+        let opts = options;
+        if (typeof opts === "undefined" && (!canvas || !canvas.getContext)) {
+          opts = canvas;
+          canvas = void 0;
+        }
+        if (!opts) opts = {};
+        const canvasEl = exports.render(qrData, canvas, opts);
+        const type = opts.type || "image/png";
+        const rendererOpts = opts.rendererOpts || {};
+        return canvasEl.toDataURL(type, rendererOpts.quality);
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/renderer/svg-tag.js
+  var require_svg_tag = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/renderer/svg-tag.js"(exports) {
+      var Utils = require_utils2();
+      function getColorAttrib(color, attrib) {
+        const alpha = color.a / 255;
+        const str = attrib + '="' + color.hex + '"';
+        return alpha < 1 ? str + " " + attrib + '-opacity="' + alpha.toFixed(2).slice(1) + '"' : str;
+      }
+      function svgCmd(cmd, x, y) {
+        let str = cmd + x;
+        if (typeof y !== "undefined") str += " " + y;
+        return str;
+      }
+      function qrToPath(data, size, margin) {
+        let path = "";
+        let moveBy = 0;
+        let newRow = false;
+        let lineLength = 0;
+        for (let i = 0; i < data.length; i++) {
+          const col = Math.floor(i % size);
+          const row = Math.floor(i / size);
+          if (!col && !newRow) newRow = true;
+          if (data[i]) {
+            lineLength++;
+            if (!(i > 0 && col > 0 && data[i - 1])) {
+              path += newRow ? svgCmd("M", col + margin, 0.5 + row + margin) : svgCmd("m", moveBy, 0);
+              moveBy = 0;
+              newRow = false;
+            }
+            if (!(col + 1 < size && data[i + 1])) {
+              path += svgCmd("h", lineLength);
+              lineLength = 0;
+            }
+          } else {
+            moveBy++;
+          }
+        }
+        return path;
+      }
+      exports.render = function render(qrData, options, cb) {
+        const opts = Utils.getOptions(options);
+        const size = qrData.modules.size;
+        const data = qrData.modules.data;
+        const qrcodesize = size + opts.margin * 2;
+        const bg = !opts.color.light.a ? "" : "<path " + getColorAttrib(opts.color.light, "fill") + ' d="M0 0h' + qrcodesize + "v" + qrcodesize + 'H0z"/>';
+        const path = "<path " + getColorAttrib(opts.color.dark, "stroke") + ' d="' + qrToPath(data, size, opts.margin) + '"/>';
+        const viewBox = 'viewBox="0 0 ' + qrcodesize + " " + qrcodesize + '"';
+        const width = !opts.width ? "" : 'width="' + opts.width + '" height="' + opts.width + '" ';
+        const svgTag = '<svg xmlns="http://www.w3.org/2000/svg" ' + width + viewBox + ' shape-rendering="crispEdges">' + bg + path + "</svg>\n";
+        if (typeof cb === "function") {
+          cb(null, svgTag);
+        }
+        return svgTag;
+      };
+    }
+  });
+
+  // tmp/npmenv/node_modules/qrcode/lib/browser.js
+  var require_browser = __commonJS({
+    "tmp/npmenv/node_modules/qrcode/lib/browser.js"(exports) {
+      var canPromise = require_can_promise();
+      var QRCode = require_qrcode();
+      var CanvasRenderer = require_canvas();
+      var SvgRenderer = require_svg_tag();
+      function renderCanvas(renderFunc, canvas, text, opts, cb) {
+        const args = [].slice.call(arguments, 1);
+        const argsNum = args.length;
+        const isLastArgCb = typeof args[argsNum - 1] === "function";
+        if (!isLastArgCb && !canPromise()) {
+          throw new Error("Callback required as last argument");
+        }
+        if (isLastArgCb) {
+          if (argsNum < 2) {
+            throw new Error("Too few arguments provided");
+          }
+          if (argsNum === 2) {
+            cb = text;
+            text = canvas;
+            canvas = opts = void 0;
+          } else if (argsNum === 3) {
+            if (canvas.getContext && typeof cb === "undefined") {
+              cb = opts;
+              opts = void 0;
+            } else {
+              cb = opts;
+              opts = text;
+              text = canvas;
+              canvas = void 0;
+            }
+          }
+        } else {
+          if (argsNum < 1) {
+            throw new Error("Too few arguments provided");
+          }
+          if (argsNum === 1) {
+            text = canvas;
+            canvas = opts = void 0;
+          } else if (argsNum === 2 && !canvas.getContext) {
+            opts = text;
+            text = canvas;
+            canvas = void 0;
+          }
+          return new Promise(function(resolve, reject) {
+            try {
+              const data = QRCode.create(text, opts);
+              resolve(renderFunc(data, canvas, opts));
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }
+        try {
+          const data = QRCode.create(text, opts);
+          cb(null, renderFunc(data, canvas, opts));
+        } catch (e) {
+          cb(e);
+        }
+      }
+      exports.create = QRCode.create;
+      exports.toCanvas = renderCanvas.bind(null, CanvasRenderer.render);
+      exports.toDataURL = renderCanvas.bind(null, CanvasRenderer.renderToDataURL);
+      exports.toString = renderCanvas.bind(null, function(data, _, opts) {
+        return SvgRenderer.render(data, opts);
+      });
+    }
+  });
+
+  // tmp/entry2.js
+  var require_entry2 = __commonJS({
+    "tmp/entry2.js"(exports, module) {
+      var QRCode = require_browser();
+      module.exports = QRCode;
+    }
+  });
+  return require_entry2();
+})();
+
+// ════════════════════════════════════════════
+
+// Pre-built SVGs for instant load (server-generated, zero wait)
+var PREBUILT = {
+  'https://github.com/abdoElHodaky': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h37v37H0z"/><path stroke="#000000" d="M2 2.5h7m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m2 0h2m1 0h7M2 3.5h1m5 0h1m1 0h1m2 0h2m4 0h1m4 0h1m1 0h1m1 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h3m3 0h3m1 0h1m2 0h1m1 0h2m1 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m2 0h1m4 0h1m1 0h2m2 0h1m1 0h3m1 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m3 0h1m2 0h3m1 0h5m4 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m1 0h1m3 0h5m1 0h1m1 0h5m1 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 9.5h1m2 0h1m1 0h1m5 0h5M4 10.5h3m1 0h1m1 0h3m2 0h1m1 0h3m2 0h1m1 0h6m2 0h3M6 11.5h2m4 0h1m1 0h1m1 0h1m1 0h2m3 0h1m3 0h2m2 0h1m2 0h1M3 12.5h2m2 0h2m2 0h1m4 0h1m1 0h1m1 0h4m4 0h2m1 0h3M2 13.5h3m1 0h2m1 0h3m5 0h1m1 0h1m3 0h3m6 0h3M2 14.5h2m3 0h2m2 0h1m6 0h2m2 0h2m1 0h3m1 0h2m2 0h1M4 15.5h1m1 0h1m2 0h5m1 0h1m2 0h1m3 0h1m1 0h5m2 0h1m2 0h1M2 16.5h1m2 0h1m2 0h1m1 0h1m2 0h1m1 0h2m1 0h1m1 0h2m2 0h1m1 0h1m4 0h1m1 0h1M3 17.5h1m3 0h1m3 0h3m1 0h3m1 0h1m1 0h6m1 0h2m1 0h4M6 18.5h1m1 0h1m5 0h1m2 0h1m3 0h1m5 0h1m1 0h2m2 0h2M2 19.5h2m7 0h1m2 0h3m1 0h2m1 0h3m1 0h2m1 0h1m5 0h1M3 20.5h1m1 0h1m1 0h2m1 0h5m2 0h2m1 0h1m1 0h1m5 0h1m3 0h2M2 21.5h4m3 0h1m1 0h1m1 0h2m2 0h1m1 0h1m1 0h9m1 0h2M3 22.5h2m1 0h1m1 0h2m4 0h2m1 0h1m1 0h3m2 0h1m1 0h2m1 0h3m2 0h1M2 23.5h1m1 0h1m2 0h1m2 0h2m4 0h1m1 0h1m3 0h1m3 0h3m5 0h1M2 24.5h1m1 0h1m2 0h2m3 0h1m1 0h1m1 0h1m1 0h2m1 0h4m4 0h1m1 0h3M2 25.5h1m1 0h4m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m4 0h4M2 26.5h1m5 0h2m2 0h1m3 0h5m1 0h10m1 0h2M10 27.5h4m4 0h1m1 0h1m5 0h1m3 0h2m2 0h1M2 28.5h7m4 0h3m2 0h1m2 0h2m1 0h3m1 0h1m1 0h2m1 0h1M2 29.5h1m5 0h1m2 0h2m1 0h3m3 0h2m3 0h2m3 0h5M2 30.5h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h3m3 0h2m1 0h5m2 0h2M2 31.5h1m1 0h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h2m4 0h2m2 0h4M2 32.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h5m1 0h2m1 0h4m3 0h1M2 33.5h1m5 0h1m2 0h1m3 0h3m1 0h4m1 0h1m2 0h1m1 0h1m1 0h2M2 34.5h7m3 0h3m1 0h2m1 0h1m2 0h1m2 0h3m5 0h1"/></svg>`,
+  'https://hello.cv/abdoelhodaky': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h37v37H0z"/><path stroke="#000000" d="M2 2.5h7m4 0h1m5 0h3m1 0h2m1 0h1m1 0h7M2 3.5h1m5 0h1m8 0h1m1 0h2m1 0h2m2 0h1m1 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h1m2 0h1m3 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m1 0h1m3 0h3m3 0h2m1 0h1m1 0h2m1 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m2 0h4m2 0h2m1 0h2m2 0h2m2 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m4 0h1m1 0h1m2 0h3m3 0h1m1 0h1m1 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 9.5h3m5 0h1m1 0h1m3 0h1M5 10.5h2m1 0h2m3 0h1m1 0h1m1 0h2m1 0h1m4 0h2m4 0h2M3 11.5h1m3 0h1m2 0h1m1 0h3m1 0h1m2 0h4m1 0h2m1 0h1m1 0h2m1 0h1M7 12.5h2m2 0h2m4 0h1m1 0h2m1 0h2m1 0h3m1 0h1m2 0h3M4 13.5h1m1 0h2m3 0h1m1 0h2m2 0h1m1 0h1m5 0h1m3 0h2m1 0h1M2 14.5h1m3 0h1m1 0h2m1 0h2m3 0h1m2 0h6m1 0h1m1 0h4m1 0h1M2 15.5h1m1 0h4m1 0h2m2 0h2m2 0h4m1 0h4m1 0h1m4 0h2M4 16.5h5m1 0h1m2 0h2m3 0h1m1 0h2m4 0h1m1 0h1m1 0h3M2 17.5h6m1 0h1m3 0h7m1 0h1m3 0h1m1 0h1m3 0h4M2 18.5h2m1 0h1m1 0h3m1 0h2m2 0h1m1 0h2m1 0h1m6 0h5m1 0h1M3 19.5h2m2 0h1m1 0h2m2 0h2m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m1 0h4m2 0h1M2 20.5h1m2 0h4m1 0h1m2 0h1m1 0h3m2 0h1m1 0h1m2 0h1m3 0h4m1 0h1M3 21.5h1m1 0h1m3 0h6m1 0h2m1 0h3m3 0h3m1 0h1m1 0h4M2 22.5h2m3 0h2m2 0h1m5 0h3m1 0h2m1 0h1m3 0h2m1 0h1M2 23.5h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m3 0h5m1 0h2m1 0h1m1 0h5M2 24.5h1m1 0h1m1 0h5m1 0h3m2 0h1m2 0h3m1 0h2m2 0h2m2 0h3M2 25.5h1m1 0h1m5 0h3m1 0h1m2 0h2m2 0h1m3 0h2m2 0h1m2 0h3M2 26.5h5m1 0h2m1 0h3m3 0h4m1 0h1m2 0h7M10 27.5h2m2 0h1m1 0h1m1 0h3m2 0h1m2 0h1m3 0h1m1 0h2M2 28.5h7m1 0h1m1 0h6m2 0h1m1 0h1m2 0h2m1 0h1m1 0h1M2 29.5h1m5 0h1m2 0h1m6 0h2m2 0h5m3 0h4M2 30.5h1m1 0h3m1 0h1m1 0h3m1 0h2m1 0h5m1 0h9m1 0h1M2 31.5h1m1 0h3m1 0h1m1 0h3m1 0h3m1 0h1m2 0h1m1 0h2m1 0h2m1 0h1m1 0h1m1 0h1M2 32.5h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h5m1 0h1m1 0h1m1 0h1m3 0h1m2 0h2M2 33.5h1m5 0h1m5 0h4m5 0h1m7 0h4M2 34.5h7m2 0h2m1 0h2m1 0h1m2 0h1m1 0h2m2 0h1m1 0h1m1 0h2"/></svg>`,
+  'https://linkedin.com/in/abdelrhman-elhodaky-9521bb220': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h45v45H0z"/><path stroke="#000000" d="M2 2.5h7m5 0h1m1 0h1m1 0h1m1 0h3m1 0h2m2 0h1m1 0h1m1 0h1m3 0h7M2 3.5h1m5 0h1m2 0h1m1 0h10m3 0h1m3 0h1m2 0h2m1 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h5m1 0h1m2 0h2m2 0h1m1 0h1m3 0h2m1 0h2m2 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m1 0h1m3 0h1m2 0h3m1 0h3m1 0h2m2 0h2m1 0h3m1 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m2 0h2m1 0h2m1 0h1m2 0h1m6 0h2m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m2 0h1m1 0h1m1 0h4m1 0h1m4 0h3m3 0h1m4 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 9.5h2m3 0h2m1 0h3m2 0h2m4 0h1m1 0h1M5 10.5h2m1 0h2m2 0h3m1 0h5m2 0h1m1 0h2m1 0h4m7 0h2M3 11.5h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1m7 0h4m1 0h2m1 0h3m4 0h1m2 0h1M2 12.5h3m1 0h3m2 0h4m1 0h2m2 0h3m2 0h1m1 0h4m4 0h1m1 0h1m2 0h2M2 13.5h2m2 0h2m2 0h1m6 0h3m2 0h5m1 0h1m2 0h1m1 0h2m4 0h1m1 0h2M3 14.5h2m1 0h8m2 0h4m1 0h2m4 0h3m6 0h2m3 0h1M11 15.5h5m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m3 0h3m2 0h3m3 0h1M2 16.5h1m5 0h1m1 0h1m2 0h2m5 0h1m1 0h1m2 0h1m1 0h3m1 0h1m3 0h3m1 0h2m1 0h1M3 17.5h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m1 0h1m3 0h2m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1M3 18.5h2m3 0h4m1 0h2m3 0h4m2 0h1m1 0h1m1 0h3m2 0h3m5 0h1M6 19.5h1m3 0h1m1 0h5m2 0h1m1 0h4m2 0h1m1 0h1m2 0h4m2 0h1m1 0h1M3 20.5h4m1 0h1m3 0h1m1 0h1m2 0h1m2 0h1m3 0h2m1 0h1m1 0h1m3 0h2m2 0h4m1 0h1M2 21.5h1m8 0h1m1 0h3m1 0h1m1 0h2m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1m2 0h1m1 0h2M3 22.5h1m2 0h5m1 0h1m2 0h1m1 0h1m1 0h3m5 0h2m1 0h1m4 0h2m2 0h3M2 23.5h2m3 0h1m1 0h1m3 0h1m2 0h5m1 0h2m1 0h1m1 0h3m1 0h3m3 0h4M8 24.5h4m6 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h2m3 0h1m1 0h3M2 25.5h1m2 0h1m4 0h2m1 0h2m1 0h2m2 0h1m1 0h1m2 0h3m3 0h1m3 0h4M2 26.5h3m3 0h1m3 0h1m3 0h1m1 0h1m6 0h3m1 0h2m3 0h1m1 0h2m3 0h2M2 27.5h1m1 0h1m1 0h1m3 0h3m1 0h13m1 0h3m1 0h1m1 0h1m1 0h3m1 0h3M2 28.5h1m1 0h1m1 0h1m1 0h1m8 0h3m2 0h2m3 0h3m2 0h8m1 0h2M4 29.5h2m1 0h1m1 0h1m3 0h2m2 0h4m2 0h1m1 0h1m2 0h3m2 0h1m4 0h5M4 30.5h3m1 0h1m1 0h2m1 0h2m2 0h2m2 0h2m1 0h1m1 0h1m1 0h1m4 0h3m1 0h1m1 0h1m2 0h1M2 31.5h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h3m2 0h7m3 0h2m2 0h2m1 0h4M2 32.5h2m3 0h2m2 0h3m4 0h3m2 0h2m2 0h2m1 0h2m1 0h3m3 0h1m2 0h1M2 33.5h4m1 0h1m1 0h1m3 0h3m2 0h3m6 0h1m1 0h2m1 0h3m1 0h1m1 0h1m1 0h1M2 34.5h2m2 0h1m1 0h3m1 0h1m4 0h1m1 0h1m3 0h1m2 0h1m3 0h2m1 0h8M10 35.5h3m1 0h4m3 0h1m4 0h1m1 0h2m2 0h1m1 0h1m3 0h2M2 36.5h7m1 0h2m1 0h1m1 0h1m2 0h1m4 0h1m3 0h1m1 0h6m1 0h1m1 0h3M2 37.5h1m5 0h1m4 0h2m1 0h1m2 0h1m1 0h3m1 0h4m1 0h2m1 0h2m3 0h2m2 0h1M2 38.5h1m1 0h3m1 0h1m1 0h3m2 0h6m1 0h2m2 0h2m1 0h11m2 0h1M2 39.5h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h1m1 0h3m3 0h1m2 0h4m2 0h1m2 0h1m1 0h4M2 40.5h1m1 0h3m1 0h1m3 0h2m1 0h1m1 0h2m7 0h1m1 0h4m3 0h1m1 0h6M2 41.5h1m5 0h1m4 0h1m3 0h10m1 0h3m1 0h1m2 0h1m2 0h1m1 0h1m1 0h1M2 42.5h7m2 0h1m2 0h1m1 0h2m1 0h3m2 0h3m2 0h1m3 0h2m1 0h1m1 0h2"/></svg>`,
+  'https://wa.me/201141894373': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h33v33H0z"/><path stroke="#000000" d="M2 2.5h7m3 0h1m3 0h3m2 0h2m1 0h7M2 3.5h1m5 0h1m2 0h1m1 0h7m1 0h1m2 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h3m1 0h2m2 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m1 0h2m1 0h5m1 0h1m2 0h1m1 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m2 0h5m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m2 0h1m10 0h1m1 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 9.5h3m1 0h2m1 0h4M5 10.5h2m1 0h2m2 0h2m7 0h1m5 0h2M2 11.5h2m2 0h1m3 0h1m3 0h4m2 0h1m2 0h1m1 0h3m1 0h1M2 12.5h2m4 0h1m1 0h1m1 0h2m4 0h7m2 0h1M2 13.5h1m2 0h1m1 0h1m3 0h1m1 0h2m1 0h2m3 0h2m2 0h2m3 0h1M2 14.5h1m2 0h1m2 0h2m2 0h3m2 0h2m1 0h1m1 0h3m3 0h2M2 15.5h2m1 0h2m2 0h5m3 0h2m5 0h1m1 0h1m1 0h1m1 0h1M4 16.5h2m2 0h1m2 0h1m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m1 0h1m1 0h2M3 17.5h2m2 0h1m5 0h1m1 0h2m1 0h1m1 0h2m1 0h1m2 0h5M3 18.5h6m2 0h3m1 0h2m1 0h2m2 0h1m1 0h2m1 0h1M2 19.5h2m1 0h1m1 0h1m1 0h1m1 0h2m5 0h3m4 0h2M2 20.5h2m4 0h1m1 0h2m3 0h1m1 0h1m1 0h4m3 0h3m1 0h1M2 21.5h2m2 0h2m2 0h1m1 0h1m1 0h3m4 0h1m1 0h2m2 0h2m1 0h1M2 22.5h4m2 0h1m1 0h6m1 0h10m1 0h1M10 23.5h1m1 0h2m2 0h3m2 0h2m3 0h3M2 24.5h7m1 0h2m1 0h2m2 0h6m1 0h1m1 0h1m1 0h1M2 25.5h1m5 0h1m2 0h2m1 0h2m2 0h2m1 0h2m3 0h2m1 0h2M2 26.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h6M2 27.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m9 0h1m1 0h2M2 28.5h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h2m1 0h1m1 0h2m1 0h3m1 0h2M2 29.5h1m5 0h1m2 0h1m1 0h1m4 0h2m1 0h4m1 0h2m2 0h1M2 30.5h7m3 0h1m1 0h2m1 0h2m1 0h2m3 0h2m1 0h1"/></svg>`
+};
+
+var currentURL = 'https://github.com/abdoElHodaky';
+var qrTimer;
+
+// Generate QR SVG string for any URL
+function genQRSvg(url, cb) {
+  // Use prebuilt if available (instant)
+  if (PREBUILT[url]) { cb(null, PREBUILT[url]); return; }
+  // Otherwise generate via bundled library
+  try {
+    QRCodeLib.toString(url, {
+      type: 'svg',
+      errorCorrectionLevel: 'H',
+      margin: 2,
+      color: { dark: '#000000', light: '#ffffff' }
+    }, function(err, svg) {
+      if (err) cb(err, null);
+      else cb(null, svg);
+    });
+  } catch(e) {
+    cb(e, null);
+  }
+}
+
+// Inject SVG into a container element
+function injectQR(containerId, url) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  genQRSvg(url, function(err, svg) {
+    if (err || !svg) {
+      el.innerHTML = '<div style="font-size:9px;color:#f85149;text-align:center;padding:4px">QR error</div>';
+      setStatus('err', 'QR generation failed: ' + (err ? err.message : 'unknown'));
+      return;
+    }
+    el.innerHTML = svg;
+    // Make SVG fill container
+    var svgEl = el.querySelector('svg');
+    if (svgEl) {
+      svgEl.removeAttribute('width');
+      svgEl.removeAttribute('height');
+      svgEl.style.width = '100%';
+      svgEl.style.height = '100%';
+      svgEl.style.display = 'block';
+    }
+  });
+}
+
+function setAllQR(url) {
+  currentURL = url;
+  var short = url.replace(/^https?:\/\//, '');
+  setStatus('loading', 'Generating QR…');
+  injectQR('qrFront', url);
+  injectQR('qrBack', url);
+  injectQR('modalQrEl', url);
+  document.getElementById('bUrl').textContent = short;
+  document.getElementById('fWeb').textContent = short;
+  document.getElementById('modalUrlTxt').textContent = '🔗 ' + short;
+  setStatus('ok', 'QR ready · Pure JS · Offline · Error correction H · Scannable');
+}
+
+function setStatus(state, msg) {
+  document.getElementById('qrDot').className = 'qr-dot ' + state;
+  document.getElementById('qrTxt').textContent = msg;
+}
+
+function debounceQR(url) {
+  clearTimeout(qrTimer);
+  setStatus('loading', 'Typing…');
+  qrTimer = setTimeout(function() { if (url.length > 4) setAllQR(url); }, 600);
+}
+
+function setQR(url, btn) {
+  document.getElementById('iQR').value = url;
+  document.querySelectorAll('.qb').forEach(function(b) { b.classList.remove('sel'); });
+  if (btn) btn.classList.add('sel');
+  setAllQR(url);
+}
+
+// Card flip
+function flipCard() { document.getElementById('cardBody').classList.toggle('flipped'); }
+function stopFlip(e) { e.stopPropagation(); }
+
+// Live field update
+function liveUpdate() {
+  var name  = document.getElementById('iName').value;
+  var role  = document.getElementById('iRole').value;
+  var email = document.getElementById('iEmail').value;
+  var phone = document.getElementById('iPhone').value;
+  var loc   = document.getElementById('iLoc').value;
+  setText('fName', name); setText('fRole', role);
+  setText('fEmail', email); setText('fPhone', phone); setText('fLoc', loc);
+  var parts = name.trim().split(/\s+/);
+  var init = parts.slice(0,2).map(function(p){ return (p[0]||'').toUpperCase(); }).join('');
+  document.getElementById('fMono').textContent = init || 'AE';
+}
+function setText(id, val) { var el=document.getElementById(id); if(el) el.textContent=val; }
+
+// Themes
+var allThemes = ['t-gold','t-mid','t-slate'];
+function setTheme(theme, dot) {
+  var body = document.getElementById('cardBody');
+  allThemes.forEach(function(t) { body.classList.remove(t); });
+  body.classList.add(theme);
+  document.querySelectorAll('.tdot').forEach(function(d) { d.classList.remove('active'); });
+  if (dot) dot.classList.add('active');
+}
+
+// Templates
+var TPLS = {
+  backend:  {name:'AbdElrhman ElHodaky',role:'Backend Engineer · DevOps Practitioner',  email:'abdo_elhodaky@yahoo.com',phone:'+20 114 189 4373',loc:'📍 Gharbia, Egypt · open to remote',qr:'https://github.com/abdoElHodaky',theme:'t-gold',ti:0},
+  devops:   {name:'AbdElrhman ElHodaky',role:'DevOps Engineer · Platform Architect',    email:'abdo_elhodaky@yahoo.com',phone:'+20 114 189 4373',loc:'📍 Gharbia, Egypt · open to remote',qr:'https://github.com/abdoElHodaky',theme:'t-mid', ti:1},
+  freelance:{name:'AbdElrhman ElHodaky',role:'Freelance Backend & Cloud Engineer',      email:'abdo_elhodaky@yahoo.com',phone:'+20 114 189 4373',loc:'📍 Gharbia, Egypt · Mostaql · Khamsat',qr:'https://hello.cv/abdoelhodaky',theme:'t-slate',ti:2},
+  architect:{name:'AbdElrhman ElHodaky',role:'Systems Architect · 60M+ Ops/Hr Scale',  email:'abdo_elhodaky@yahoo.com',phone:'+20 114 189 4373',loc:'📍 Gharbia, Egypt · open to remote',qr:'https://github.com/abdoElHodaky',theme:'t-gold',ti:0}
+};
+function loadTpl(key, el) {
+  var t = TPLS[key]; if(!t) return;
+  document.getElementById('iName').value=t.name; document.getElementById('iRole').value=t.role;
+  document.getElementById('iEmail').value=t.email; document.getElementById('iPhone').value=t.phone;
+  document.getElementById('iLoc').value=t.loc; document.getElementById('iQR').value=t.qr;
+  liveUpdate(); setAllQR(t.qr);
+  var dots=document.querySelectorAll('.tdot'); setTheme(t.theme, dots[t.ti]);
+  document.querySelectorAll('.tpl').forEach(function(c){c.classList.remove('active');});
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.qb').forEach(function(b){b.classList.remove('sel');});
+}
+function resetCard() { loadTpl('backend', document.querySelectorAll('.tpl')[0]); }
+
+// Save template
+function saveTpl() {
+  var data={name:document.getElementById('iName').value,role:document.getElementById('iRole').value,email:document.getElementById('iEmail').value,phone:document.getElementById('iPhone').value,location:document.getElementById('iLoc').value,qr:currentURL,savedAt:new Date().toISOString()};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='card-template.json'; a.click();
+}
+
+// Modal
+function openModal(e) {
+  if(e) e.stopPropagation();
+  injectQR('modalQrEl', currentURL);
+  document.getElementById('modalUrlTxt').textContent = '🔗 ' + currentURL.replace(/^https?:\/\//, '');
+  document.getElementById('scanModal').classList.add('open');
+}
+function closeModal()  { document.getElementById('scanModal').classList.remove('open'); }
+function bgClose(e)    { if(e.target===document.getElementById('scanModal')) closeModal(); }
+function openURL()     { window.open(currentURL,'_blank'); }
+
+// Init
+window.addEventListener('load', function() { setAllQR(currentURL); });
+</script>
+</body>
+</html>
