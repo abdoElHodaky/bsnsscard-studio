@@ -320,9 +320,10 @@ body{
 .flip-hint{
   font-family:var(--M);font-size:11px;color:var(--c-ink4);
   display:flex;align-items:center;gap:.5rem;cursor:pointer;
-  align-self:center;transition:color .23s;
+  align-self:center;transition:color .23s,opacity .13s;
 }
 .flip-hint:hover{color:var(--c-ink3)}
+.flip-hint:active{opacity:.6}
 .flip-hint::before{content:'\21BB';color:var(--c-au3)}
 .qr-bar{
   display:flex;align-items:center;gap:.6rem;
@@ -393,6 +394,7 @@ body{
   transition:transform .33s var(--spring),border-color .23s,box-shadow .23s;
 }
 .tdot:hover{transform:scale(1.1)}
+.tdot:active{transform:scale(.92)}
 .tdot.on{border-color:var(--c-ink);box-shadow:0 0 0 3px rgba(237,232,224,.1)}
 .tdot:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .td-v{background:linear-gradient(135deg,#0e0d10,#bc9052)}
@@ -414,9 +416,10 @@ body{
 .cp-swatch{
   width:32px;height:32px;border-radius:3px;border:1px solid var(--c-brd2);
   cursor:pointer;flex-shrink:0;position:relative;overflow:hidden;
-  transition:border-color .23s;
+  transition:border-color .23s,transform .15s;
 }
 .cp-swatch:hover{border-color:var(--c-brd3)}
+.cp-swatch:active{transform:scale(.94)}
 .cp-swatch input[type=color]{
   position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);
   opacity:0;cursor:pointer;border:none;padding:0;
@@ -434,10 +437,11 @@ body{
   padding:5px 10px;background:none;border:1px solid var(--c-brd2);
   font-family:var(--M);font-size:9px;color:var(--c-ind2);
   cursor:pointer;border-radius:0;
-  transition:border-color .23s,color .23s;width:100%;margin-top:.4rem;
+  transition:border-color .23s,color .23s,transform .15s;width:100%;margin-top:.4rem;
   text-decoration:none;
 }
 .coolors-btn:hover{border-color:var(--c-ind);color:var(--c-ink)}
+.coolors-btn:active{transform:scale(.97)}
 .coolors-btn svg{flex-shrink:0}
 
 /* ── Palette generator (coolors-style shuffle + lock) ── */
@@ -461,9 +465,10 @@ body{
 .lock-btn{
   width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
   background:none;border:1px solid var(--c-brd2);color:var(--c-ink4);cursor:pointer;border-radius:2px;
-  transition:border-color .23s,color .23s,background .23s;
+  transition:border-color .23s,color .23s,background .23s,transform .13s;
 }
 .lock-btn:hover{border-color:var(--c-brd3);color:var(--c-ink2)}
+.lock-btn:active{transform:scale(.9)}
 .lock-btn.locked{border-color:var(--c-au);color:var(--c-au);background:rgba(var(--c-au-rgb),.1)}
 .lock-btn:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .lock-btn svg{width:11px;height:11px;pointer-events:none}
@@ -492,23 +497,26 @@ body{
   display:flex;align-items:center;gap:.5rem;
   padding:.35rem .6rem;cursor:pointer;
   border:1px solid transparent;
-  transition:background .2s,border-color .2s;
+  transition:background .2s,border-color .2s,transform .15s;
   font-family:var(--M);font-size:10px;color:var(--c-ink3);
 }
 .role-tag:hover{background:var(--c-bg3);color:var(--c-ink2)}
+.role-tag:active{transform:scale(.98)}
 .role-tag.active{border-color:var(--c-brd2);background:rgba(var(--c-au-rgb),.04);color:var(--c-ink)}
 .role-tag-icon{width:12px;height:12px;flex-shrink:0;color:var(--c-au4)}
 .role-tag-icon svg{width:12px;height:12px;display:block}
-.saved-role{cursor:pointer}
+.saved-role{cursor:pointer;transition:transform .15s}
+.saved-role:active{transform:scale(.98)}
 .saved-role-info{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
 .saved-role-info span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .saved-role-actions{display:flex;gap:4px;flex-shrink:0}
 .sr-apply-btn{
   font-family:var(--D);font-size:9px;font-weight:700;color:var(--c-au);
   background:none;border:1px solid var(--c-au4);padding:4px 9px;cursor:pointer;
-  transition:background .23s,color .23s;min-height:26px;
+  transition:background .23s,color .23s,transform .13s;min-height:26px;
 }
 .sr-apply-btn:hover{background:var(--c-au);color:#0e0d10}
+.sr-apply-btn:active{transform:scale(.94)}
 .sr-apply-btn:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .sr-remove-btn{
   width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
@@ -516,6 +524,7 @@ body{
   transition:border-color .23s,color .23s;
 }
 .sr-remove-btn:hover{border-color:var(--c-err);color:var(--c-err)}
+.sr-remove-btn:active{transform:scale(.9)}
 .sr-remove-btn:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .role-custom-wrap{position:relative;margin-top:.35rem}
 .role-custom{
@@ -541,15 +550,17 @@ body{
   border-radius:10px;transition:border-color .23s,color .23s;background:none;min-height:26px;
 }
 .role-recent-chip:hover{border-color:var(--c-au4);color:var(--c-au)}
+.role-recent-chip:active{transform:scale(.96)}
 
 /* Resume import */
 .resume-drop{
   display:flex;align-items:center;gap:.5rem;padding:10px 12px;
   border:1px dashed var(--c-brd2);cursor:pointer;color:var(--c-ink3);
-  font-family:var(--M);font-size:10.5px;transition:border-color .23s,color .23s,background .23s;
+  font-family:var(--M);font-size:10.5px;transition:border-color .23s,color .23s,background .23s,transform .13s;
   position:relative;
 }
 .resume-drop:hover{border-color:var(--c-au4);color:var(--c-au3);background:var(--c-bg3)}
+.resume-drop:active{transform:scale(.99)}
 .resume-drop:focus-within{outline:2px solid var(--c-au);outline-offset:2px}
 .resume-drop svg{flex-shrink:0;color:var(--c-au4)}
 .resume-field-row{
@@ -561,9 +572,10 @@ body{
 .resume-field-use{
   font-family:var(--D);font-size:9px;font-weight:700;color:var(--c-au);
   background:none;border:1px solid var(--c-au4);padding:4px 9px;cursor:pointer;flex-shrink:0;min-height:26px;
-  transition:background .23s,color .23s;
+  transition:background .23s,color .23s,transform .13s;
 }
 .resume-field-use:hover{background:var(--c-au);color:#0e0d10}
+.resume-field-use:active{transform:scale(.94)}
 .resume-field-use:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .resume-field-use.used{border-color:var(--c-ok);color:var(--c-ok);background:none}
 .role-recent-chip:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
@@ -580,9 +592,10 @@ body{
 .rps-apply{
   font-family:var(--D);font-size:10px;font-weight:700;color:var(--c-au);
   background:none;border:1px solid var(--c-au4);padding:6px 12px;cursor:pointer;
-  transition:background .23s,color .23s;min-height:32px;flex-shrink:0;
+  transition:background .23s,color .23s,transform .15s;min-height:32px;flex-shrink:0;
 }
 .rps-apply:hover{background:var(--c-au);color:#0e0d10}
+.rps-apply:active{transform:scale(.96)}
 .rps-apply:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 
 /* Orientation toggle */
@@ -594,11 +607,12 @@ body{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;
   padding:10px 8px;background:var(--c-bg3);border:none;border-right:1px solid var(--c-border);
   font-family:var(--M);font-size:10px;color:var(--c-ink3);cursor:pointer;
-  transition:border-color .23s,color .23s,background .23s;min-height:44px;
+  transition:border-color .23s,color .23s,background .23s,transform .15s;min-height:44px;
 }
 .orient-btn:last-child{border-right:none}
 .orient-btn svg{color:var(--c-ink4);transition:color .23s}
 .orient-btn:hover{background:var(--c-bg4);color:var(--c-ink2)}
+.orient-btn:active{transform:scale(.97)}
 .orient-btn.on{background:rgba(var(--c-au-rgb),.1);color:var(--c-au3)}
 .orient-btn.on svg{color:var(--c-au)}
 .orient-btn:focus-visible{outline:2px solid var(--c-au);outline-offset:-2px}
@@ -608,9 +622,10 @@ body{
 .tpl{
   display:flex;align-items:center;gap:.7rem;padding:.5rem .6rem;
   cursor:pointer;border:1px solid transparent;
-  transition:background .23s,border-color .23s;
+  transition:background .23s,border-color .23s,transform .12s;
 }
 .tpl:hover{background:var(--c-bg3)}
+.tpl:active{transform:scale(.98)}
 .tpl.on{border-color:var(--c-brd2);background:rgba(var(--c-au-rgb),.04)}
 .tpl-sw{width:20px;height:20px;border-radius:2px;flex-shrink:0}
 .tpl-n{font-size:12px;font-weight:600;color:var(--c-ink);letter-spacing:-.2px}
@@ -651,10 +666,11 @@ body{
   padding:4px 10px;border:1px solid var(--c-border);
   font-family:var(--M);font-size:10px;color:var(--c-ink3);
   background:none;cursor:pointer;border-radius:0;
-  transition:border-color .23s,color .23s,background .23s;min-height:32px;
+  transition:border-color .23s,color .23s,background .23s,transform .13s;min-height:32px;
 }
 .qt:hover{border-color:var(--c-au4);color:var(--c-au)}
 .qt.on{border-color:var(--c-au);color:var(--c-au);background:rgba(var(--c-au-rgb),.07)}
+.qt:active{transform:scale(.94)}
 .qt:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 
 /* QR shimmer */
@@ -691,9 +707,10 @@ body{
   font-family:var(--D);font-size:12px;font-weight:600;min-height:44px;
   cursor:pointer;text-align:left;border-radius:0;
   display:flex;align-items:center;justify-content:space-between;
-  transition:border-color .23s,color .23s;color:var(--c-ink2);background:none;
+  transition:border-color .23s,color .23s,transform .15s;color:var(--c-ink2);background:none;
 }
 .a-load:hover{border-color:var(--c-au4);color:var(--c-au)}
+.a-load:active{transform:scale(.98)}
 .a-arr{font-size:14px;opacity:.5}
 button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
   outline:2px solid var(--c-au);outline-offset:2px;
@@ -760,9 +777,10 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
   font-family:var(--M);font-size:12px;color:var(--card-accent);
   background:var(--c-bg3);border:1px solid var(--c-brd2);
   padding:7px 12px;margin-bottom:1rem;word-break:break-all;
-  cursor:pointer;min-height:36px;text-align:left;transition:border-color .23s,color .78s;
+  cursor:pointer;min-height:36px;text-align:left;transition:border-color .23s,color .78s,transform .15s;
 }
 .murl:hover{border-color:var(--card-accent)}
+.murl:active{transform:scale(.98)}
 .murl .cur{
   display:inline-block;width:2px;height:10px;background:var(--card-accent);
   margin-left:1px;vertical-align:middle;animation:blink 1.04s infinite;
@@ -811,6 +829,12 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
 
 /* ═══ 12. KEYFRAMES ═══════════════════════════════════════════════ */
 @keyframes fadeUp  {from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* Reusable entrance for dynamically-created items (saved roles/themes,
+   recent-role chips, custom templates) — these were previously just
+   appendChild()'d with zero transition, popping into existence instantly
+   while everything else in the app got motion treatment this session. */
+.pop-in{animation:popIn .39s var(--spring)}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes pulse   {0%,100%{opacity:1}50%{opacity:.2}}
 @keyframes blink   {0%,100%{opacity:1}50%{opacity:0}}
 @keyframes shimmer {0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -1025,25 +1049,6 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
 
   <div class="ctrl-body">
 
-    <!-- PREFERENCES -->
-    <div class="csec">
-      <div class="clbl">Preferences</div>
-      <label class="switch-row">
-        <span><span class="switch-label">Reduce motion</span><br><span class="switch-desc">Follows your system by default</span></span>
-        <span class="switch">
-          <input type="checkbox" id="toggleReduceMotion" onchange="setReduceMotion(this.checked)" aria-label="Reduce motion in this app"/>
-          <span class="switch-track" aria-hidden="true"></span>
-        </span>
-      </label>
-      <label class="switch-row">
-        <span><span class="switch-label">Haptic feedback</span><br><span class="switch-desc">Subtle vibration on mobile taps</span></span>
-        <span class="switch">
-          <input type="checkbox" id="toggleHaptics" onchange="setHapticsEnabled(this.checked)" aria-label="Enable haptic feedback"/>
-          <span class="switch-track" aria-hidden="true"></span>
-        </span>
-      </label>
-    </div>
-
     <!-- SHUFFLE ALL -->
     <div class="csec">
       <button type="button" class="gen-btn" style="width:100%" onclick="shuffleAll()" aria-label="Randomize name, contact info, QR target, role, and color palette all at once">
@@ -1195,34 +1200,35 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
     <!-- TEMPLATES -->
     <div class="csec">
       <div class="clbl" id="tpl-label">Templates</div>
-      <div class="tpls" role="listbox" aria-labelledby="tpl-label">
+      <div class="tpls" role="listbox" aria-labelledby="tpl-label" id="tplsList">
         <div class="tpl tpl-live" id="tplLive" onclick="focusColorSection()" role="option" aria-selected="false" tabindex="0">
           <div class="tpl-sw" id="tplLiveSw" style="background:linear-gradient(135deg,#0e0d10,#bc9052)"></div>
           <div><div class="tpl-n">Current Palette</div><div class="tpl-d" id="tplLiveDesc">matches The Vault</div></div>
           <span class="tpl-ck" aria-hidden="true">&#10003;</span>
         </div>
-        <div class="tpl on" id="tplCard-backend" onclick="loadTpl('backend',this)" role="option" aria-selected="true">
+        <div class="tpl on" id="tplCard-backend" data-tpl-key="backend" onclick="loadTpl('backend',this)" role="option" aria-selected="true">
           <div class="tpl-sw" id="tplSw-backend" style="background:linear-gradient(135deg,#0e0d10,#bc9052)"></div>
           <div><div class="tpl-n">Backend Engineer</div><div class="tpl-d" id="tplD-backend">vault &middot; dark gold &middot; serif</div></div>
           <span class="tpl-ck" aria-hidden="true">&#10003;</span>
         </div>
-        <div class="tpl" id="tplCard-devops" onclick="loadTpl('devops',this)" role="option" aria-selected="false">
+        <div class="tpl" id="tplCard-devops" data-tpl-key="devops" onclick="loadTpl('devops',this)" role="option" aria-selected="false">
           <div class="tpl-sw" id="tplSw-devops" style="background:linear-gradient(135deg,#060814,#4a5ce0)"></div>
           <div><div class="tpl-n">DevOps Engineer</div><div class="tpl-d" id="tplD-devops">midnight &middot; indigo &middot; mono</div></div>
           <span class="tpl-ck" aria-hidden="true">&#10003;</span>
         </div>
-        <div class="tpl" id="tplCard-freelance" onclick="loadTpl('freelance',this)" role="option" aria-selected="false">
+        <div class="tpl" id="tplCard-freelance" data-tpl-key="freelance" onclick="loadTpl('freelance',this)" role="option" aria-selected="false">
           <div class="tpl-sw" id="tplSw-freelance" style="background:linear-gradient(135deg,#f4ede4,#bc9052)"></div>
           <div><div class="tpl-n">Freelancer</div><div class="tpl-d" id="tplD-freelance">bone white &middot; warm &middot; clean</div></div>
           <span class="tpl-ck" aria-hidden="true">&#10003;</span>
         </div>
-        <div class="tpl" id="tplCard-architect" onclick="loadTpl('architect',this)" role="option" aria-selected="false">
+        <div class="tpl" id="tplCard-architect" data-tpl-key="architect" onclick="loadTpl('architect',this)" role="option" aria-selected="false">
           <div class="tpl-sw" id="tplSw-architect" style="background:linear-gradient(135deg,#070d08,#3a9e68)"></div>
           <div><div class="tpl-n">Systems Architect</div><div class="tpl-d" id="tplD-architect">obsidian &middot; emerald &middot; scale</div></div>
           <span class="tpl-ck" aria-hidden="true">&#10003;</span>
         </div>
       </div>
-      <button type="button" class="act" id="updateTplBtn" style="margin-top:.6rem;font-size:11px;min-height:36px" onclick="updateExistingTemplate(CUR_TPL_KEY)" aria-label="Update the loaded template with the current name, contact details, role, and matching theme">&#8635; Update this template</button>
+      <button type="button" class="act" id="saveTplBtn" style="margin-top:.5rem;font-size:11px;min-height:36px" onclick="saveCurrentAsTemplate()" aria-label="Save the current name, contact details, role, and colors as a brand new template">+ Save as new template</button>
+      <button type="button" class="act" id="updateTplBtn" style="margin-top:.4rem;font-size:11px;min-height:36px" onclick="updateExistingTemplate(CUR_TPL_KEY)" aria-label="Update the loaded template with the current name, contact details, role, and matching theme">&#8635; Update this template</button>
     </div>
 
     <!-- ROLE / TITLE SELECTOR -->
@@ -4065,11 +4071,12 @@ function removeCustomTheme(key,dotEl){
   if(dotEl&&dotEl.parentNode)dotEl.parentNode.removeChild(dotEl);
   if(CUR_THEME===key)applyTheme('vault',document.querySelector('.tdot[data-theme-key="vault"]'));
 }
-function renderCustomThemeDot(key,themeObj){
+function renderCustomThemeDot(key,themeObj,delayMs){
   const wrap=document.getElementById('customThemeDots');
   if(!wrap)return;
   const dot=document.createElement('div');
-  dot.className='tdot td-custom-saved';
+  dot.className='tdot td-custom-saved pop-in';
+  if(delayMs)dot.style.animationDelay=delayMs+'ms';
   dot.dataset.themeKey=key;
   dot.style.background='linear-gradient(135deg,'+themeObj.bgPlain+','+themeObj.accent+')';
   dot.setAttribute('role','radio');
@@ -4085,10 +4092,10 @@ function renderCustomThemeDot(key,themeObj){
 function loadCustomThemes(){
   let list=[];
   try{list=JSON.parse(localStorage.getItem(CUSTOM_THEME_KEY)||'[]');}catch(e){list=[];}
-  list.forEach(function(t){
+  list.forEach(function(t,i){
     const themeObj={name:t.name,accent:t.accent,accent2:t.accent2,bg:t.bg,bgPlain:t.bgPlain,textPrimary:t.textPrimary,textSecondary:t.textSecondary,textLabel:t.textLabel,glow:t.glow,roleColor:t.roleColor};
     THEMES[t.key]=themeObj;
-    renderCustomThemeDot(t.key,themeObj);
+    renderCustomThemeDot(t.key,themeObj,i*40);
   });
 }
 
@@ -4280,9 +4287,9 @@ function renderRecentRoles(list){
   wrap.innerHTML='';
   if(!list||!list.length){reveal(lbl,false);return;}
   reveal(lbl,true);
-  list.forEach(function(role){
+  list.forEach(function(role,i){
     const chip=document.createElement('button');
-    chip.type='button';chip.className='role-recent-chip';chip.textContent=role;
+    chip.type='button';chip.className='role-recent-chip'+(i===0?' pop-in':'');chip.textContent=role;
     chip.setAttribute('aria-label','Use role: '+role);
     chip.addEventListener('click',function(){
       const input=document.getElementById('iRoleCustom');
@@ -4364,13 +4371,14 @@ function removeCustomRole(key,el){
   const lbl=document.getElementById('savedRolesLbl');
   if(wrap&&lbl)reveal(lbl,wrap.children.length>0);
 }
-function renderSavedRole(roleObj){
+function renderSavedRole(roleObj,delayMs){
   const wrap=document.getElementById('savedRoles');
   const lbl=document.getElementById('savedRolesLbl');
   if(!wrap)return;
   reveal(lbl,true);
   const row=document.createElement('div');
-  row.className='role-tag saved-role';
+  row.className='role-tag saved-role pop-in';
+  if(delayMs)row.style.animationDelay=delayMs+'ms';
   row.setAttribute('role','option');
   row.setAttribute('aria-selected','false');
   row.setAttribute('tabindex','0');
@@ -4393,7 +4401,7 @@ function renderSavedRole(roleObj){
   wrap.appendChild(row);
 }
 function loadSavedRoles(){
-  readSavedRoles().forEach(renderSavedRole);
+  readSavedRoles().forEach(function(roleObj,i){renderSavedRole(roleObj,i*40);});
 }
 
 /* ── RESUME IMPORT — infer role/title from an uploaded resume ──
@@ -4709,9 +4717,10 @@ function renderResumeFields(fields){
   reveal(lbl,true);
   reveal(applyAllBtn,true);
   if(applyAllBtn)applyAllBtn.querySelectorAll('.used').forEach(function(){});
-  entries.forEach(function(e){
+  entries.forEach(function(e,i){
     const row=document.createElement('div');
-    row.className='resume-field-row';
+    row.className='resume-field-row pop-in';
+    row.style.animationDelay=(i*40)+'ms';
     const btnLabel=(e.key==='linkedin'||e.key==='github'||e.key==='portfolio')?'Use as QR':'Use';
     row.innerHTML='<span class="resume-field-label"></span><span class="resume-field-value"></span><button type="button" class="resume-field-use">'+btnLabel+'</button>';
     row.querySelector('.resume-field-label').textContent=e.label;
@@ -4770,9 +4779,9 @@ function renderResumeSuggestions(candidates){
   wrap.innerHTML='';
   if(!candidates.length){reveal(lbl,false);return;}
   reveal(lbl,true);
-  candidates.forEach(function(label){
+  candidates.forEach(function(label,i){
     const chip=document.createElement('button');
-    chip.type='button';chip.className='role-recent-chip';chip.textContent=label;
+    chip.type='button';chip.className='role-recent-chip pop-in';chip.style.animationDelay=(i*40)+'ms';chip.textContent=label;
     chip.setAttribute('aria-label','Use title found in resume: '+label);
     chip.addEventListener('click',function(){
       const input=document.getElementById('iRoleCustom');
@@ -4971,34 +4980,6 @@ function onShellLeave(){
 }
 
 /* ── FLIP ── */
-/* ── PREFERENCES — reduce motion & haptics switches ── */
-const REDUCE_MOTION_KEY='cardStudio.reduceMotion';
-const HAPTICS_KEY='cardStudio.hapticsEnabled';
-let HAPTICS_ENABLED=true;
-function setReduceMotion(on){
-  document.documentElement.classList.toggle('force-reduced-motion',on);
-  try{localStorage.setItem(REDUCE_MOTION_KEY,on?'1':'0');}catch(e){/* ignore */}
-}
-function loadReduceMotion(){
-  let saved=null;
-  try{saved=localStorage.getItem(REDUCE_MOTION_KEY);}catch(e){/* ignore */}
-  const on=saved==='1';
-  const el=document.getElementById('toggleReduceMotion');
-  if(el)el.checked=on;
-  if(on)document.documentElement.classList.add('force-reduced-motion');
-}
-function setHapticsEnabled(on){
-  HAPTICS_ENABLED=on;
-  try{localStorage.setItem(HAPTICS_KEY,on?'1':'0');}catch(e){/* ignore */}
-}
-function loadHapticsEnabled(){
-  let saved=null;
-  try{saved=localStorage.getItem(HAPTICS_KEY);}catch(e){/* ignore */}
-  HAPTICS_ENABLED=saved===null?true:saved==='1';
-  const el=document.getElementById('toggleHaptics');
-  if(el)el.checked=HAPTICS_ENABLED;
-}
-function haptic(p){if(HAPTICS_ENABLED&&navigator.vibrate)navigator.vibrate(p);}
 function flipCard(){
   if(isFlipping)return;
   const card=document.getElementById('card');
@@ -5007,7 +4988,6 @@ function flipCard(){
   isFlipping=true;
   if(shell)shell.classList.add('flipping');
   card.classList.toggle('flipped');
-  haptic(12);
   const onEnd=function(e){
     if(e.target!==card)return;
     isFlipping=false;
@@ -5129,7 +5109,11 @@ function applyTemplateOverrides(){
   let overrides={};
   try{overrides=JSON.parse(localStorage.getItem(TPL_OVERRIDES_KEY)||'{}');}catch(e){overrides={};}
   Object.keys(overrides).forEach(function(k){
-    if(TPLS[k])TPLS[k]=Object.assign({},TPLS[k],overrides[k]);
+    // Object.assign({},TPLS[k]||{},...) instead of the old `if(TPLS[k])`
+    // guard — that guard silently dropped brand-new custom templates on
+    // reload, since their key never existed in the base TPLS object to
+    // begin with; merging into an empty object creates the entry instead.
+    TPLS[k]=Object.assign({},TPLS[k]||{},overrides[k]);
   });
 }
 applyTemplateOverrides();
@@ -5160,9 +5144,20 @@ function loadTpl(key,el){
     const themeDot=document.querySelectorAll('.tdot')[t.ti];
     applyTheme(t.themeKey,themeDot);
   }
-  // Apply role
-  const roleEl=document.querySelectorAll('.role-tag')[ROLES.indexOf(t.role)];
-  selectRole(t.role,roleEl);
+  // Apply role — templates saved while a custom-typed role was active
+  // store customRoleLabel instead of a ROLES reference (ROLES.indexOf on a
+  // plain string would never match, since it's not one of the 8 presets).
+  if(t.customRoleLabel){
+    const customInput=document.getElementById('iRoleCustom');
+    if(customInput)customInput.value=t.customRoleLabel;
+    document.querySelectorAll('.role-tag:not(.saved-role)').forEach(function(tag){
+      tag.classList.remove('active');tag.setAttribute('aria-selected','false');
+    });
+    onCustomRole(t.customRoleLabel);
+  }else{
+    const roleEl=document.querySelectorAll('.role-tag')[ROLES.indexOf(t.role)];
+    selectRole(t.role,roleEl);
+  }
   // Update template selection UI
   document.querySelectorAll('.tpl').forEach(function(c){c.classList.remove('on');c.setAttribute('aria-selected','false');});
   if(el){el.classList.add('on');el.setAttribute('aria-selected','true');}
@@ -5178,8 +5173,7 @@ function loadTpl(key,el){
 function refreshTemplatePreview(key){
   const t=TPLS[key];
   if(!t)return;
-  const cardIndex=Object.keys(TPLS).indexOf(key);
-  const card=document.querySelectorAll('.tpl:not(.tpl-live)')[cardIndex];
+  const card=document.querySelector('.tpl[data-tpl-key="'+key+'"]');
   if(!card)return;
   const sw=card.querySelector('.tpl-sw');
   const desc=card.querySelector('.tpl-d');
@@ -5227,10 +5221,85 @@ function updateExistingTemplate(key){
     // just generated, same as saved roles/themes already do.
     updated.customColors=Object.assign({},CUR_COLORS);
   }
+  // Role — the button's own label always promised this ("...role, and
+  // colors") but the code never actually captured it, so a template's
+  // linked role silently never changed no matter what role was active
+  // when you clicked Update.
+  if(CUR_ROLE_KEY==='custom'){
+    updated.customRoleLabel=(document.getElementById('fRole')||{}).textContent||(document.getElementById('iRoleCustom')||{}).value||'';
+    delete updated.role;
+  }else{
+    const roleObj=ROLES.find(function(r){return r.key===CUR_ROLE_KEY;});
+    if(roleObj){updated.role=roleObj;delete updated.customRoleLabel;}
+  }
   TPLS[key]=updated;
   persistTemplateOverride(key,updated);
   refreshTemplatePreview(key);
   showToast('Updated template','success');
+}
+/* ── SAVE AS NEW TEMPLATE ──
+   Themes and Roles both already had a "+" to save a brand-new one; the
+   Templates section only ever let you overwrite one of the 4 built-ins —
+   there was no way to add a 5th slot at all. */
+function saveCurrentAsTemplate(){
+  const label=(window.prompt('Name this template (shown in the Templates list):','')||'').trim();
+  if(!label)return;
+  const key='userTpl_'+Date.now();
+  const tplObj={
+    label:label,
+    name:(document.getElementById('iName')||{}).value||'',
+    email:(document.getElementById('iEmail')||{}).value||'',
+    phone:(document.getElementById('iPhone')||{}).value||'',
+    loc:(document.getElementById('iLoc')||{}).value||'',
+    qr:(document.getElementById('iQR')||{}).value||CUR
+  };
+  const matchKey=typeof findMatchingThemeKey==='function'?findMatchingThemeKey():null;
+  if(matchKey){
+    tplObj.themeKey=matchKey;
+  }else{
+    tplObj.customColors=Object.assign({},CUR_COLORS);
+    tplObj.themeKey='vault'; // inert fallback — customColors always takes priority in loadTpl()
+  }
+  if(CUR_ROLE_KEY==='custom'){
+    tplObj.customRoleLabel=(document.getElementById('fRole')||{}).textContent||(document.getElementById('iRoleCustom')||{}).value||'';
+  }else{
+    tplObj.role=ROLES.find(function(r){return r.key===CUR_ROLE_KEY;})||ROLES[0];
+  }
+  TPLS[key]=tplObj;
+  persistTemplateOverride(key,tplObj);
+  renderCustomTemplateCard(key,tplObj);
+  showToast('Saved template: '+label,'success');
+}
+function renderCustomTemplateCard(key,t,delayMs){
+  const list=document.getElementById('tplsList');
+  if(!list)return;
+  const accent=t.customColors?t.customColors.accent:((THEMES[t.themeKey]||{}).accent||'#bc9052');
+  const bg=t.customColors?t.customColors.bg:((THEMES[t.themeKey]||{}).bgPlain||'#0e0d10');
+  const desc=t.customColors?'custom palette':((THEMES[t.themeKey]||{}).name||'theme')+' theme';
+  const card=document.createElement('div');
+  card.className='tpl pop-in';
+  if(delayMs)card.style.animationDelay=delayMs+'ms';
+  card.id='tplCard-'+key;
+  card.dataset.tplKey=key;
+  card.setAttribute('role','option');
+  card.setAttribute('aria-selected','false');
+  card.innerHTML=
+    '<div class="tpl-sw" style="background:linear-gradient(135deg,'+bg+','+accent+')"></div>'+
+    '<div><div class="tpl-n"></div><div class="tpl-d"></div></div>'+
+    '<span class="tpl-ck" aria-hidden="true">&#10003;</span>';
+  card.querySelector('.tpl-n').textContent=t.label||'Custom';
+  card.querySelector('.tpl-d').textContent=desc;
+  card.addEventListener('click',function(){loadTpl(key,card);});
+  list.appendChild(card);
+}
+function loadCustomTemplates(){
+  let i=0;
+  Object.keys(TPLS).forEach(function(key){
+    if(key.indexOf('userTpl_')===0&&!document.getElementById('tplCard-'+key)){
+      renderCustomTemplateCard(key,TPLS[key],i*40);
+      i++;
+    }
+  });
 }
 function updateTemplateActionsUI(){
   const btn=document.getElementById('updateTplBtn');
@@ -5307,8 +5376,8 @@ function syncTemplateSelection(){
       if(TPLS[key].themeKey===matchKey)matchedTplKey=key;
     });
   }
-  document.querySelectorAll('.tpl:not(.tpl-live)').forEach(function(card,i){
-    const key=Object.keys(TPLS)[i];
+  document.querySelectorAll('.tpl[data-tpl-key]').forEach(function(card){
+    const key=card.getAttribute('data-tpl-key');
     const on=key===matchedTplKey;
     card.classList.toggle('on',on);
     card.setAttribute('aria-selected',on?'true':'false');
@@ -5469,7 +5538,6 @@ function openModal(e){
   if(e)e.stopPropagation();
   injectQR('mqr',CUR);
   document.getElementById('modal').classList.add('open');
-  haptic([8,30,8]);
   clearTimeout(modalTypeTmr);
   modalTypeTmr=setTimeout(function(){typeURL(CUR);},200);
 }
@@ -5677,10 +5745,9 @@ window.addEventListener('load',function(){
   scaleCard();
   loadOrientation();
   loadChromeTheme();
-  loadReduceMotion();
-  loadHapticsEnabled();
   updateTemplateActionsUI();
   refreshOverriddenThemeDots();
+  loadCustomTemplates();
   refreshOverriddenTemplatePreviews();
   setLogo('backend');
   buildCoolors();
