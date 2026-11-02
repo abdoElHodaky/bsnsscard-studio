@@ -230,6 +230,28 @@ body{
 
 /* ═══ 7. FRONT ELEMENTS ════════════════════════════════════════════ */
 .f-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:var(--z-card)}
+/* Availability pill — takes the place of the decorative dots in the top-right
+   when switched on. Colors come from tokens: green = open, amber = booked,
+   card accent = custom text. */
+.f-top.has-avail .dots{display:none}
+.avail{
+  display:inline-flex;align-items:center;gap:5px;max-width:60%;
+  padding:3px 8px 3px 6px;border-radius:999px;
+  border:1px solid rgba(var(--card-glow),.35);background:rgba(var(--card-glow),.06);
+  font-family:var(--M);font-size:6.5px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--card-text-secondary);
+  transition:color .78s,border-color .78s,background .78s;
+}
+/* an author display value beats the browser's [hidden]{display:none}, so
+   without this the pill would show even while switched off */
+.avail[hidden]{display:none}
+.avail-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:var(--card-accent);transition:background .78s}
+.avail[data-status="open"] .avail-dot{background:var(--c-ok);animation:pulse 2.6s infinite}
+.avail[data-status="booked"] .avail-dot{background:var(--c-warn)}
+.avail-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.avail-check{display:flex;align-items:center;gap:.55rem;min-height:36px;cursor:pointer;font-family:var(--M);font-size:11px;color:var(--c-ink2)}
+.avail-check input{width:16px;height:16px;accent-color:var(--c-au);cursor:pointer;flex-shrink:0}
+.avail-check input:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
 .mono{
   width:38px;height:38px;border-radius:50%;
   border:1px solid var(--card-border);
@@ -310,6 +332,18 @@ body{
 .b-mid{z-index:var(--z-card);text-align:center}
 .b-url{font-family:var(--M);font-size:9px;color:var(--card-text-primary);letter-spacing:.3px;transition:color .78s}
 .b-line{width:32px;height:1px;background:linear-gradient(90deg,transparent,var(--card-accent),transparent);margin:.3rem auto;transition:background .78s}
+/* Social links row on the back — icon + handle per enabled channel. It takes
+   over from the fixed "github · linkedin · portfolio" caption under the QR,
+   which would otherwise repeat it (and name channels that aren't shown). */
+.b-social{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;margin-top:5px;position:relative;z-index:var(--z-card)}
+.b-social[hidden]{display:none}
+.b-soc{display:inline-flex;align-items:center;gap:3px;font-family:var(--M);font-size:6.5px;letter-spacing:.3px;color:var(--card-text-secondary);transition:color .78s}
+.b-soc-i{display:inline-flex;width:8px;height:8px;color:var(--card-accent);transition:color .78s}
+.b-soc-i svg{width:100%;height:100%;display:block}
+.b-soc-h{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk.has-social .b-scan{display:none}
+.soc-row{display:grid;grid-template-columns:104px 1fr;gap:.5rem;align-items:center;margin-top:.15rem}
+.soc-row .avail-check{min-height:32px}
 .b-bottom{display:flex;gap:16px;z-index:var(--z-card);margin-bottom:4px}
 .b-stat{text-align:center}
 .b-sl{font-family:var(--M);font-size:6.5px;color:var(--card-text-label);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;transition:color .78s}
@@ -457,6 +491,8 @@ body{
 .gen-btn:active{transform:scale(.98)}
 .gen-btn:focus-visible{outline:2px solid var(--c-ink);outline-offset:2px}
 .gen-btn svg{flex-shrink:0}
+.gen-btn-alt{flex:0 0 auto;white-space:nowrap;background:none;color:var(--c-au);border:1px solid var(--c-au4)}
+.gen-btn-alt:hover{opacity:1;background:rgba(var(--c-au-rgb),.1)}
 .gen-hint{font-family:var(--M);font-size:9px;color:var(--c-ink4);margin-bottom:.7rem;line-height:1.6}
 .gen-hint kbd{
   font-family:var(--M);background:var(--c-bg4);border:1px solid var(--c-brd2);
@@ -879,6 +915,7 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
   .sr-remove-btn{width:30px;height:30px}
   .resume-drop{min-height:44px}
   .resume-field-use{min-height:34px}
+  .avail-check{min-height:44px}
   .orient-btn{min-height:52px}
   .theme-switch{transform:scale(1.1)}
   .share-menu button{min-height:44px}
@@ -971,6 +1008,7 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
           <div class="f-top">
             <div class="mono" id="fMono" aria-hidden="true">AE</div>
             <div class="dots" aria-hidden="true"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="avail" id="fAvail" data-status="open" hidden><span class="avail-dot" aria-hidden="true"></span><span class="avail-txt" id="fAvailTxt">Open to work</span></div>
           </div>
           <div class="f-mid">
             <div class="f-name" id="fName">AbdElrhman ElHodaky</div>
@@ -1006,6 +1044,7 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
           <div class="b-mid">
             <div class="b-url" id="bUrl">github.com/abdoElHodaky</div>
             <div class="b-line" aria-hidden="true"></div>
+            <div class="b-social" id="bSocial" hidden></div>
           </div>
           <div class="b-bottom">
             <div class="b-stat"><div class="b-sl">stack</div><div class="b-sv">NestJS &middot; K8s</div></div>
@@ -1100,8 +1139,9 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
           Generate palette
         </button>
+        <button class="gen-btn gen-btn-alt" id="flipModeBtn" onclick="flipPaletteMode()" aria-label="Flip the palette between light and dark mode — locked colors are kept unchanged"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>Flip mode</button>
       </div>
-      <p class="gen-hint">Press <kbd>Space</kbd> to shuffle unlocked colors · click a swatch's lock to keep it fixed · rotates through analogous, complementary, triadic &amp; split-complement color schemes · every generated palette is auto-checked for readable contrast.</p>
+      <p class="gen-hint">Press <kbd>Space</kbd> to shuffle unlocked colors · click <b>Flip mode</b> for the light/dark twin of the current palette · click a swatch's lock to keep it fixed · rotates through analogous, complementary, triadic &amp; split-complement color schemes · every generated palette is auto-checked for readable contrast.</p>
 
       <!-- Coolors palette presets -->
       <div style="font-family:var(--M);font-size:9px;color:var(--c-ink4);margin-bottom:.4rem">Curated palettes</div>
@@ -1293,6 +1333,44 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
       <label class="sr-only" for="iLoc">Location</label>
       <input class="cinput" id="iLoc" value="Gharbia, Egypt · open to remote" placeholder="Location" oninput="live()"/>
       <button class="act" style="margin-top:.6rem;font-size:11px;min-height:36px" onclick="fillSampleData()" aria-label="Fill name, email, phone, location, and QR target with fresh randomized sample data">&#127922; Fill with sample data</button>
+    </div>
+
+    <!-- AVAILABILITY -->
+    <div class="csec">
+      <div class="clbl" id="avail-label">Availability</div>
+      <label class="avail-check"><input type="checkbox" id="availOn" onchange="onAvailChange()"/> Show status pill on the card</label>
+      <div class="orient-toggle" role="radiogroup" aria-labelledby="avail-label" style="margin-top:.5rem">
+        <button type="button" class="orient-btn on" id="availOpen" onclick="setAvailStatus('open')" role="radio" aria-checked="true">Open to work</button>
+        <button type="button" class="orient-btn" id="availBooked" onclick="setAvailStatus('booked')" role="radio" aria-checked="false">Booked</button>
+        <button type="button" class="orient-btn" id="availCustom" onclick="setAvailStatus('custom')" role="radio" aria-checked="false">Custom</button>
+      </div>
+      <div id="availCustomWrap" class="reveal" style="margin-top:.5rem"><div class="reveal-inner">
+        <label class="sr-only" for="iAvailText">Custom availability text</label>
+        <input class="cinput" id="iAvailText" maxlength="24" placeholder="e.g. Taking Q3 projects" oninput="onAvailChange()"/>
+      </div></div>
+      <p class="gen-hint" style="margin-top:.4rem;margin-bottom:0">Replaces the three dots on the front of the card. Saved with roles, templates and exported files.</p>
+    </div>
+
+    <!-- SOCIAL LINKS ON THE BACK -->
+    <div class="csec">
+      <div class="clbl" id="soc-label">Social links on the back</div>
+      <div class="soc-row">
+        <label class="avail-check"><input type="checkbox" id="socOnGithub" onchange="onSocialToggle('github')"/> GitHub</label>
+        <input class="cinput" id="socUrlGithub" placeholder="github.com/you" aria-label="GitHub link" oninput="onSocialUrl('github')" onchange="onSocialUrlCommit('github')"/>
+      </div>
+      <div class="soc-row">
+        <label class="avail-check"><input type="checkbox" id="socOnLinkedin" onchange="onSocialToggle('linkedin')"/> LinkedIn</label>
+        <input class="cinput" id="socUrlLinkedin" placeholder="linkedin.com/in/you" aria-label="LinkedIn link" oninput="onSocialUrl('linkedin')" onchange="onSocialUrlCommit('linkedin')"/>
+      </div>
+      <div class="soc-row">
+        <label class="avail-check"><input type="checkbox" id="socOnPortfolio" onchange="onSocialToggle('portfolio')"/> Portfolio</label>
+        <input class="cinput" id="socUrlPortfolio" placeholder="yoursite.com" aria-label="Portfolio link" oninput="onSocialUrl('portfolio')" onchange="onSocialUrlCommit('portfolio')"/>
+      </div>
+      <div class="soc-row">
+        <label class="avail-check"><input type="checkbox" id="socOnWhatsapp" onchange="onSocialToggle('whatsapp')"/> WhatsApp</label>
+        <input class="cinput" id="socUrlWhatsapp" placeholder="wa.me/15551234567" aria-label="WhatsApp link" oninput="onSocialUrl('whatsapp')" onchange="onSocialUrlCommit('whatsapp')"/>
+      </div>
+      <p class="gen-hint" style="margin-top:.4rem;margin-bottom:0">Shows an icon and handle per ticked link, replacing the caption under the QR. These are the same links as the QR quick-targets, so editing one updates both.</p>
     </div>
 
     <!-- QR TARGET -->
@@ -3556,6 +3634,7 @@ let CUR_ROLE_KEY='backend';
 let CUR_COLORS={accent:'#bc9052',display:'#d4b891',bg:'#0e0d10',text:'#d4b891',role:'#bc9052'};
 let LOCKS={accent:false,display:false,bg:false,text:false,role:false};
 let LAST_GENERATED_SCHEME=null;
+let AVAIL={on:false,status:'open',text:''};
 const ROLE_RECENT_KEY='cardStudio.recentRoles';
 let qrTmr=null,typTmr=null,flipSafetyTmr=null,modalTypeTmr=null,vcardRefreshTmr=null;
 let rafP=false,tiltP=false,isFlipping=false,resizeRaf=null;
@@ -3725,6 +3804,19 @@ function hslToHex(h,s,l){
   const a=s*Math.min(l,1-l);
   const f=function(n){return l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));};
   return rgbToHex(255*f(0),255*f(8),255*f(4));
+}
+function hexToHsl(hex){
+  const {r,g,b}=hexToRgb(hex);
+  const R=r/255,G=g/255,B=b/255;
+  const max=Math.max(R,G,B),min=Math.min(R,G,B),d=max-min;
+  const l=(max+min)/2;
+  let h=0,s=0;
+  if(d){
+    s=d/(1-Math.abs(2*l-1));
+    if(max===R)h=((G-B)/d)%6;else if(max===G)h=(B-R)/d+2;else h=(R-G)/d+4;
+    h*=60;if(h<0)h+=360;
+  }
+  return {h:h,s:s*100,l:l*100};
 }
 function randRange(min,max){return min+Math.random()*(max-min);}
 
@@ -3972,6 +4064,39 @@ function refreshCurrentRoleSuggestion(){
     const role=ROLES.find(function(r){return r.key===CUR_ROLE_KEY;});
     if(role)showRoleSuggestion(role.key,role.label);
   }
+}
+
+/* ── LIGHT/DARK FLIP ──
+   Turns the live palette into its opposite-mode twin: every channel keeps
+   its hue and saturation, its lightness is mirrored (100 - L) and then
+   clamped into the range that channel normally uses in the target mode,
+   and the same WCAG correction as Generate runs afterwards. Works on any
+   palette - a theme, a Coolors preset, a generated one - because it reads
+   the live CUR_COLORS. Locked channels are left alone. */
+function flipPaletteMode(){
+  if(LOCKS.bg){
+    showToast('Unlock the background color to flip light/dark','error');
+    return;
+  }
+  const toLight=relLuminance(CUR_COLORS.bg)<.5;
+  const clamp=function(v,lo,hi){return Math.max(lo,Math.min(hi,v));};
+  const mirror=function(key,lo,hi,satCap){
+    const c=hexToHsl(CUR_COLORS[key]);
+    return hslToHex(c.h,Math.min(c.s,satCap),clamp(100-c.l,lo,hi));
+  };
+  const next=Object.assign({},CUR_COLORS);
+  next.bg=toLight?mirror('bg',92,97,45):mirror('bg',4,9,38);
+  if(!LOCKS.text)next.text=toLight?mirror('text',12,22,35):mirror('text',80,92,35);
+  if(!LOCKS.display)next.display=toLight?mirror('display',20,32,55):mirror('display',72,86,55);
+  if(!LOCKS.accent)next.accent=toLight?mirror('accent',35,50,70):mirror('accent',45,60,70);
+  if(!LOCKS.role)next.role=toLight?mirror('role',38,52,68):mirror('role',50,64,68);
+  next.text=fixContrast(next.text,next.bg,4.5,LOCKS.text);
+  next.accent=fixContrast(next.accent,next.bg,3.0,LOCKS.accent);
+  next.role=fixContrast(next.role,next.bg,3.0,LOCKS.role);
+  CUR_COLORS=next;
+  applyManualColors();
+  refreshCurrentRoleSuggestion();
+  showToast('Flipped to '+(toLight?'light':'dark')+' mode \u2014 locked colors kept','success');
 }
 
 function applyTheme(key,dot){
@@ -4324,6 +4449,8 @@ function saveCurrentAsRole(){
     icon:CUR_LOGO_KEY,
     colors:Object.assign({},CUR_COLORS),
     orientation:(shell&&shell.classList.contains('vertical'))?'portrait':'landscape',
+    availability:getAvailability(),
+    social:getSocial(),
     content:{
       name:(document.getElementById('iName')||{}).value||'',
       email:(document.getElementById('iEmail')||{}).value||'',
@@ -4359,6 +4486,8 @@ function applyCustomRole(key){
   CUR_COLORS=Object.assign({},roleObj.colors);
   applyManualColors();
   setOrientation(roleObj.orientation==='portrait'?'portrait':'landscape');
+  if(roleObj.availability)setAvailability(roleObj.availability);
+  if(roleObj.social)setSocial(roleObj.social);
   showRoleSuggestion('custom',roleObj.label);
   showToast('Applied role: '+roleObj.label,'success');
 }
@@ -4745,6 +4874,7 @@ function applyResumeField(key,value){
     const qtBtn=document.getElementById(btnMap[key]);
     if(qtBtn)qtBtn.dataset.real=value;
     setQR(value,qtBtn);
+    syncSocialControls();renderSocial();
     return;
   }
   const map={name:'iName',email:'iEmail',phone:'iPhone',loc:'iLoc'};
@@ -4945,6 +5075,7 @@ function onStageMove(e){
     rafP=false;
     const stg=document.getElementById('stage');if(!stg)return;
     const r=stg.getBoundingClientRect();
+    if(!r.width||!r.height)return;
     stg.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
     stg.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
   });
@@ -5058,6 +5189,139 @@ function generateFakeData(){
   };
   return {name:name,email:email,phone:phone,loc:loc,qrTargets:qrTargets};
 }
+/* ── AVAILABILITY PILL ── a small status badge on the front of the card.
+   State lives in AVAIL; getAvailability/setAvailability are the single entry
+   points used by roles, templates, exported files and the public API. */
+const AVAIL_PRESETS={open:'Open to work',booked:'Booked'};
+function availLabel(){
+  if(AVAIL.status==='custom')return (AVAIL.text||'').trim()||'Available';
+  return AVAIL_PRESETS[AVAIL.status]||'Available';
+}
+function renderAvail(){
+  const pill=document.getElementById('fAvail');
+  const top=document.querySelector('.front .f-top');
+  if(!pill)return;
+  const wasHidden=pill.hidden;
+  pill.dataset.status=AVAIL.status;
+  const txt=document.getElementById('fAvailTxt');
+  if(txt)txt.textContent=availLabel();
+  pill.hidden=!AVAIL.on;
+  if(top)top.classList.toggle('has-avail',AVAIL.on);
+  if(AVAIL.on&&wasHidden){pill.classList.remove('pop-in');void pill.offsetWidth;pill.classList.add('pop-in');}
+}
+function syncAvailControls(){
+  const on=document.getElementById('availOn');if(on)on.checked=AVAIL.on;
+  ['open','booked','custom'].forEach(function(k){
+    const b=document.getElementById('avail'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(b){b.classList.toggle('on',AVAIL.status===k);b.setAttribute('aria-checked',AVAIL.status===k?'true':'false');}
+  });
+  const inp=document.getElementById('iAvailText');if(inp&&inp.value!==AVAIL.text)inp.value=AVAIL.text;
+  reveal(document.getElementById('availCustomWrap'),AVAIL.status==='custom');
+}
+function onAvailChange(){
+  const on=document.getElementById('availOn'),inp=document.getElementById('iAvailText');
+  AVAIL.on=!!(on&&on.checked);
+  AVAIL.text=inp?inp.value:AVAIL.text;
+  renderAvail();
+}
+function setAvailStatus(status){
+  AVAIL.status=status;
+  // picking a status is a clear signal the person wants the pill — turn it on
+  AVAIL.on=true;
+  syncAvailControls();renderAvail();
+}
+function getAvailability(){return {on:AVAIL.on,status:AVAIL.status,text:AVAIL.text};}
+function setAvailability(a){
+  a=a||{};
+  AVAIL={on:!!a.on,status:(a.status==='booked'||a.status==='custom')?a.status:'open',text:String(a.text||'').slice(0,24)};
+  syncAvailControls();renderAvail();
+}
+
+/* ── SOCIAL LINKS ON THE BACK ──
+   The URLs are NOT stored separately: they are the data-real attributes of
+   the four QR quick-target buttons, which the resume importer and the fake
+   data fill already write to. This block only adds the on/off flags and the
+   rendering, so every existing path that changes a link feeds the row. */
+const SOCIAL_KEYS=['github','linkedin','portfolio','whatsapp'];
+const SOCIAL_BTN={github:'qtGithub',linkedin:'qtLinkedin',portfolio:'qtPortfolio',whatsapp:'qtWhatsapp'};
+const SOCIAL_ICONS={
+  github:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>',
+  linkedin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10v8M5 6.5v.01M10 18v-8M10 14a3.5 3.5 0 0 1 7 0v4"/></svg>',
+  portfolio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  whatsapp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
+};
+let SOCIAL_ON={github:false,linkedin:false,portfolio:false,whatsapp:false};
+function socialBtn(k){return document.getElementById(SOCIAL_BTN[k]);}
+function socialUrl(k){const b=socialBtn(k);return b?(b.dataset.real||''):'';}
+function socialKeyCap(k){return k.charAt(0).toUpperCase()+k.slice(1);}
+function socialHandle(k,url){
+  const u=String(url||'').trim();
+  try{
+    const p=new URL(/^https?:\/\//i.test(u)?u:'https://'+u);
+    const segs=p.pathname.split('/').filter(Boolean);
+    const host=p.hostname.replace(/^www\./,'');
+    if(k==='whatsapp')return segs[0]?'+'+segs[0].replace(/\D/g,''):host;
+    if(k==='portfolio')return host+(segs.length?'/'+segs[0]:'');
+    return segs.length?segs[segs.length-1]:host;
+  }catch(e){return u.replace(/^https?:\/\/(www\.)?/i,'').slice(0,30);}
+}
+function renderSocial(){
+  const wrap=document.getElementById('bSocial'),face=document.querySelector('.face.bk');
+  if(!wrap)return;
+  wrap.innerHTML='';
+  let n=0;
+  SOCIAL_KEYS.forEach(function(k){
+    const url=socialUrl(k);
+    if(!SOCIAL_ON[k]||!url)return;
+    const item=document.createElement('span');item.className='b-soc';
+    const ic=document.createElement('span');ic.className='b-soc-i';ic.setAttribute('aria-hidden','true');
+    ic.innerHTML=SOCIAL_ICONS[k]; // fixed markup defined above, never user input
+    const h=document.createElement('span');h.className='b-soc-h';h.textContent=socialHandle(k,url);
+    item.appendChild(ic);item.appendChild(h);wrap.appendChild(item);n++;
+  });
+  wrap.hidden=n===0;
+  if(face)face.classList.toggle('has-social',n>0);
+}
+function syncSocialControls(){
+  SOCIAL_KEYS.forEach(function(k){
+    const cap=socialKeyCap(k);
+    const on=document.getElementById('socOn'+cap),inp=document.getElementById('socUrl'+cap);
+    if(on)on.checked=!!SOCIAL_ON[k];
+    const url=socialUrl(k);
+    if(inp&&inp.value!==url)inp.value=url;
+  });
+}
+function onSocialToggle(k){
+  const on=document.getElementById('socOn'+socialKeyCap(k));
+  SOCIAL_ON[k]=!!(on&&on.checked);
+  renderSocial();
+}
+function onSocialUrl(k){
+  const inp=document.getElementById('socUrl'+socialKeyCap(k)),b=socialBtn(k);
+  if(!inp||!b)return;
+  b.dataset.real=inp.value.trim();
+  renderSocial();
+}
+function onSocialUrlCommit(k){
+  // if this link is the one currently encoded in the QR, keep the QR in step
+  const b=socialBtn(k);
+  if(b&&b.classList.contains('on')&&b.dataset.real)setQR(b.dataset.real,b);
+}
+function getSocial(){
+  const o={};
+  SOCIAL_KEYS.forEach(function(k){o[k]={on:!!SOCIAL_ON[k],url:socialUrl(k)};});
+  return o;
+}
+function setSocial(sv){
+  sv=sv||{};
+  SOCIAL_KEYS.forEach(function(k){
+    const e=sv[k]||{};
+    SOCIAL_ON[k]=!!e.on;
+    if(typeof e.url==='string'&&e.url){const b=socialBtn(k);if(b)b.dataset.real=e.url;}
+  });
+  syncSocialControls();renderSocial();
+}
+
 function fillSampleData(){
   const data=generateFakeData();
   const iName=document.getElementById('iName');
@@ -5071,6 +5335,7 @@ function fillSampleData(){
     if(btn)btn.dataset.real=data.qrTargets[k];
   });
   setQR(data.qrTargets.github,document.getElementById('qtGithub'));
+  syncSocialControls();renderSocial();
   live();
   showToast('Sample data filled — click again for a new set','success');
 }
@@ -5133,6 +5398,10 @@ function loadTpl(key,el){
   const iLoc=document.getElementById('iLoc');if(iLoc)iLoc.value=t.loc;
   const iQR=document.getElementById('iQR');if(iQR)iQR.value=t.qr;
   live();setAll(t.qr);
+  // only templates saved after this feature existed carry a status; for the
+  // rest, leave the current pill exactly as the person set it
+  if(t.availability)setAvailability(t.availability);
+  if(t.social)setSocial(t.social);
   // Apply colors: a custom/generated palette stored via "Update this
   // template" takes priority over the theme reference, since that's what
   // was actually last saved for this template — otherwise fall back to
@@ -5205,7 +5474,9 @@ function updateExistingTemplate(key){
     email:(document.getElementById('iEmail')||{}).value||existing.email,
     phone:(document.getElementById('iPhone')||{}).value||existing.phone,
     loc:(document.getElementById('iLoc')||{}).value||existing.loc,
-    qr:(document.getElementById('iQR')||{}).value||existing.qr
+    qr:(document.getElementById('iQR')||{}).value||existing.qr,
+    availability:getAvailability(),
+    social:getSocial()
   });
   const matchKey=typeof findMatchingThemeKey==='function'?findMatchingThemeKey():null;
   if(matchKey){
@@ -5251,7 +5522,9 @@ function saveCurrentAsTemplate(){
     email:(document.getElementById('iEmail')||{}).value||'',
     phone:(document.getElementById('iPhone')||{}).value||'',
     loc:(document.getElementById('iLoc')||{}).value||'',
-    qr:(document.getElementById('iQR')||{}).value||CUR
+    qr:(document.getElementById('iQR')||{}).value||CUR,
+    availability:getAvailability(),
+    social:getSocial()
   };
   const matchKey=typeof findMatchingThemeKey==='function'?findMatchingThemeKey():null;
   if(matchKey){
@@ -5435,6 +5708,8 @@ function saveTpl(){
     location:document.getElementById('iLoc')?document.getElementById('iLoc').value:'',
     qr:CUR,theme:CUR_THEME,colors:CUR_COLORS,
     orientation:(shell&&shell.classList.contains('vertical'))?'portrait':'landscape',
+    availability:getAvailability(),
+    social:getSocial(),
     savedAt:new Date().toISOString()
   };
   const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
@@ -5480,6 +5755,10 @@ function loadTplFile(input){
       // Restore orientation (files saved before this existed default to landscape)
       if(d.orientation==='portrait')setOrientation('portrait');
       else setOrientation('landscape');
+      // a file is a full snapshot: files from before this feature have no
+      // status, so they correctly come back with the pill off
+      setAvailability(d.availability);
+      setSocial(d.social);
       live();showToast('Template loaded — colors, logo & shape restored!','success');
     }catch(err){showToast('Invalid template file','error');}
   };
@@ -5726,7 +6005,7 @@ document.addEventListener('click',function(ev){
 window.CardDesigner={
   theme:{apply:applyTheme,generatePalette:generatePalette,saveCurrent:saveCurrentAsTheme,update:updateExistingTheme,list:function(){return Object.assign({},THEMES);},lastScheme:function(){return LAST_GENERATED_SCHEME;}},
   role:{select:selectRole,setCustom:onCustomRole,commitCustom:commitCustomRole,saveCurrent:saveCurrentAsRole,apply:applyCustomRole,list:function(){return ROLES.slice();}},
-  colors:{get:function(){return Object.assign({},CUR_COLORS);},set:function(next){CUR_COLORS=Object.assign({},CUR_COLORS,next);applyManualColors();},lock:toggleLock,contrastRatio:contrastRatio},
+  colors:{flipMode:flipPaletteMode,get:function(){return Object.assign({},CUR_COLORS);},set:function(next){CUR_COLORS=Object.assign({},CUR_COLORS,next);applyManualColors();},lock:toggleLock,contrastRatio:contrastRatio},
   template:{load:loadTpl,update:updateExistingTemplate,list:function(){return Object.assign({},TPLS);}},
   orientation:{set:setOrientation,current:function(){const s=document.getElementById('cardShell');return s&&s.classList.contains('vertical')?'portrait':'landscape';}},
   chrome:{toggle:toggleChromeTheme,current:effectiveChromeMode},
@@ -5734,6 +6013,8 @@ window.CardDesigner={
   resume:{parseText:processResumeText,extractTitles:extractTitleCandidates},
   file:{save:saveTpl,exportAll:saveTpl},
   render:{scale:scaleCard,refreshLive:live},
+  availability:{get:getAvailability,set:setAvailability},
+  social:{get:getSocial,set:setSocial},
   qr:{share:shareQR,copyLink:copyQRLink,downloadImage:downloadQRImage,open:openModal}
 };
 
@@ -5749,6 +6030,7 @@ window.addEventListener('load',function(){
   refreshOverriddenThemeDots();
   loadCustomTemplates();
   refreshOverriddenTemplatePreviews();
+  syncSocialControls();renderSocial();
   setLogo('backend');
   buildCoolors();
   buildRoleSuggestions();
