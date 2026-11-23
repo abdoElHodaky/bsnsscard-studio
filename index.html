@@ -208,11 +208,12 @@ body{
   transition:background .78s var(--ease),padding .59s var(--ease),gap .59s var(--ease);
 }
 .bk{transform:rotateY(180deg);align-items:center}
-/* Vertical mode has ~1.75x the height of horizontal — space-between would
-   stretch front-top/mid/bottom edge-to-edge across all of it, leaving an
-   oddly empty middle. Cluster content with a comfortable, height-scaled
-   gap instead, the way real portrait business cards group content. */
-#cardShell.vertical .face{justify-content:flex-start;gap:calc(var(--card-h) * .045)}
+/* Vertical mode has ~1.75x the height of horizontal. The three groups
+   (top / middle / bottom) keep the base space-between so they spread over the
+   whole card. An earlier version clustered them at the top with flex-start,
+   which looked tidy on paper but, once rendered, left the lower third of the
+   card empty. The gap is just a minimum separation if content grows. */
+#cardShell.vertical .face{gap:calc(var(--card-h) * .045)}
 
 /* Grid veil */
 .gv{position:absolute;inset:0;pointer-events:none;z-index:var(--z-base)}
@@ -249,6 +250,8 @@ body{
 .avail[data-status="open"] .avail-dot{background:var(--c-ok);animation:pulse 2.6s infinite}
 .avail[data-status="booked"] .avail-dot{background:var(--c-warn)}
 .avail-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* these segments are text-only; .orient-btn stacks icon-over-label, so centre the label */
+.avail-seg{justify-content:center;min-height:40px}
 .avail-check{display:flex;align-items:center;gap:.55rem;min-height:36px;cursor:pointer;font-family:var(--M);font-size:11px;color:var(--c-ink2)}
 .avail-check input{width:16px;height:16px;accent-color:var(--c-au);cursor:pointer;flex-shrink:0}
 .avail-check input:focus-visible{outline:2px solid var(--c-au);outline-offset:2px}
@@ -312,6 +315,10 @@ body{
   position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);
   font-family:var(--M);font-size:10px;color:var(--c-ink4);white-space:nowrap;
 }
+/* In landscape the badge sits in the right margin and this hint is wider than
+   the badge, so centred under it the arrow ran into the bottom-right corner
+   mark. Right-align it to the badge instead (portrait keeps it centred). */
+#cardShell:not(.vertical) .fqr-tip{left:auto;right:6px;transform:none}
 
 /* ═══ 8. BACK ELEMENTS ════════════════════════════════════════════ */
 .b-top{display:flex;flex-direction:column;align-items:center;z-index:var(--z-card);gap:5px;padding-top:4px}
@@ -466,6 +473,11 @@ body{
 }
 .cp-hex:focus{border-color:var(--c-au);color:var(--c-ink);box-shadow:0 0 0 2px rgba(var(--c-au-rgb),.18)}
 .coolors-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem}
+/* One palette per line. As a wrapping row, palettes were sized by their own
+   content, so any two narrow enough to fit side by side (Copper + Arctic at
+   the default panel width) shared a line and ran off the edge. A column also
+   makes each whole row the click target instead of just its content width. */
+#coolorsPalettes{flex-direction:column;flex-wrap:nowrap;gap:0}
 .coolors-btn{
   display:flex;align-items:center;gap:.4rem;
   padding:5px 10px;background:none;border:1px solid var(--c-brd2);
@@ -1340,9 +1352,9 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
       <div class="clbl" id="avail-label">Availability</div>
       <label class="avail-check"><input type="checkbox" id="availOn" onchange="onAvailChange()"/> Show status pill on the card</label>
       <div class="orient-toggle" role="radiogroup" aria-labelledby="avail-label" style="margin-top:.5rem">
-        <button type="button" class="orient-btn on" id="availOpen" onclick="setAvailStatus('open')" role="radio" aria-checked="true">Open to work</button>
-        <button type="button" class="orient-btn" id="availBooked" onclick="setAvailStatus('booked')" role="radio" aria-checked="false">Booked</button>
-        <button type="button" class="orient-btn" id="availCustom" onclick="setAvailStatus('custom')" role="radio" aria-checked="false">Custom</button>
+        <button type="button" class="orient-btn avail-seg on" id="availOpen" onclick="setAvailStatus('open')" role="radio" aria-checked="true">Open to work</button>
+        <button type="button" class="orient-btn avail-seg" id="availBooked" onclick="setAvailStatus('booked')" role="radio" aria-checked="false">Booked</button>
+        <button type="button" class="orient-btn avail-seg" id="availCustom" onclick="setAvailStatus('custom')" role="radio" aria-checked="false">Custom</button>
       </div>
       <div id="availCustomWrap" class="reveal" style="margin-top:.5rem"><div class="reveal-inner">
         <label class="sr-only" for="iAvailText">Custom availability text</label>
