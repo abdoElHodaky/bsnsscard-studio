@@ -205,7 +205,7 @@ body{
      badges — without transitioning them here too, content would jump
      instantly on orientation flip while the shell around it resizes
      smoothly (the exact bug found in the QR badges, same root cause). */
-  transition:background .78s var(--ease),padding .59s var(--ease),gap .59s var(--ease);
+  transition:background .78s var(--ease),padding .59s var(--ease),gap .59s var(--ease),opacity .18s var(--ease);
 }
 .bk{transform:rotateY(180deg);align-items:center}
 /* Vertical mode has ~1.75x the height of horizontal. The three groups
@@ -351,6 +351,78 @@ body{
 .bk.has-social .b-scan{display:none}
 .soc-row{display:grid;grid-template-columns:104px 1fr;gap:.5rem;align-items:center;margin-top:.15rem}
 .soc-row .avail-check{min-height:32px}
+/* ═══ LAYOUT VARIANTS ═══
+   One attribute on #cardShell (data-layout) regroups the same elements:
+   "classic" is the original arrangement and needs no rules; "centered" and
+   "split" are below. Each one has a landscape and a portrait arrangement.
+   The Split band uses display:contents on the top/bottom wrappers so their
+   children can be placed in one grid, and a dedicated .lay-band element for
+   the tinted band behind them. */
+.face{--pad-x:calc(var(--card-w) * .05);--pad-y:calc(var(--card-h) * .07)}
+#cardShell{--band-w:calc(var(--card-w) * .3);--band-h:calc(var(--card-h) * .27)}
+.lay-band{display:none}
+/* fade out, swap the arrangement while invisible, fade back in */
+#cardShell.layout-out .face{opacity:0}
+
+/* ── Centered ── */
+#cardShell[data-layout="centered"] .front{text-align:center}
+#cardShell[data-layout="centered"] .front .f-top{justify-content:center}
+#cardShell[data-layout="centered"] .front .dots{display:none}
+#cardShell[data-layout="centered"] .front .avail{position:absolute;right:0;top:0}
+#cardShell[data-layout="centered"] .front .f-mid{display:flex;flex-direction:column;align-items:center}
+#cardShell[data-layout="centered"] .front .f-rule{background:linear-gradient(90deg,transparent,var(--card-accent),transparent)}
+#cardShell[data-layout="centered"] .front .f-role-wrap{justify-content:center}
+#cardShell[data-layout="centered"]:not(.vertical) .front .f-bottom{justify-content:center;gap:calc(var(--card-w) * .06)}
+#cardShell[data-layout="centered"]:not(.vertical) .front .f-contacts{flex:0 1 auto}
+#cardShell[data-layout="centered"].vertical .front .f-bottom{align-items:center}
+#cardShell[data-layout="centered"].vertical .front .f-contacts{width:auto}
+#cardShell[data-layout="centered"].vertical .front .f-role-wrap{flex-direction:column;align-items:center;gap:4px}
+#cardShell[data-layout="centered"] .front .f-contacts{text-align:left}
+#cardShell[data-layout="centered"] .front .f-loc{text-align:center}
+#cardShell[data-layout="centered"]:not(.vertical) .front .f-loc{text-align:left}
+
+/* ── Split band: shared ── */
+#cardShell[data-layout="split"] .front{display:grid;padding:0;gap:0;justify-content:normal;align-items:stretch}
+#cardShell[data-layout="split"] .front .f-top,
+#cardShell[data-layout="split"] .front .f-bottom{display:contents}
+#cardShell[data-layout="split"] .front .lay-band{display:block;position:absolute;z-index:0;background:rgba(var(--card-glow),.09);transition:background .78s}
+#cardShell[data-layout="split"] .front .dots{display:none}
+#cardShell[data-layout="split"] .front .mono,
+#cardShell[data-layout="split"] .front .avail,
+#cardShell[data-layout="split"] .front .fqw{position:relative;z-index:var(--z-card)}
+#cardShell[data-layout="split"] .front .fqr-tip{left:50%;right:auto;transform:translateX(-50%)}
+#cardShell[data-layout="split"] .bk{display:grid;padding:0;gap:0;align-items:stretch;justify-content:normal}
+#cardShell[data-layout="split"] .bk .b-top{background:rgba(var(--card-glow),.09);justify-content:center;transition:background .78s}
+#cardShell[data-layout="split"] .bk .b-scan{display:none}
+
+/* ── Split band: landscape (band on the left) ── */
+#cardShell[data-layout="split"]:not(.vertical) .front{grid-template-columns:var(--band-w) minmax(0,1fr);grid-template-rows:auto 1fr auto}
+#cardShell[data-layout="split"]:not(.vertical) .front .lay-band{left:0;top:0;bottom:0;width:var(--band-w);border-right:1px solid rgba(var(--card-glow),.28)}
+#cardShell[data-layout="split"]:not(.vertical) .front .mono{grid-column:1;grid-row:1;justify-self:center;margin-top:var(--pad-y)}
+#cardShell[data-layout="split"]:not(.vertical) .front .avail{grid-column:2;grid-row:1;justify-self:end;align-self:start;margin:var(--pad-y) var(--pad-x) 0 0}
+#cardShell[data-layout="split"]:not(.vertical) .front .f-mid{grid-column:2;grid-row:2;align-self:center;padding:0 var(--pad-x) 0 calc(var(--pad-x) * 1.2)}
+#cardShell[data-layout="split"]:not(.vertical) .front .f-contacts{grid-column:2;grid-row:3;align-self:end;width:auto;padding:0 var(--pad-x) var(--pad-y) calc(var(--pad-x) * 1.2)}
+#cardShell[data-layout="split"]:not(.vertical) .front .fqw{grid-column:1;grid-row:3;align-self:end;justify-self:center;margin-bottom:calc(var(--pad-y) + 16px)}
+#cardShell[data-layout="split"]:not(.vertical) .bk{grid-template-columns:var(--band-w) minmax(0,1fr);grid-template-rows:1fr auto}
+#cardShell[data-layout="split"]:not(.vertical) .bk .b-top{grid-column:1;grid-row:1 / 3;border-right:1px solid rgba(var(--card-glow),.28);padding:var(--pad-y) 0}
+#cardShell[data-layout="split"]:not(.vertical) .bk .b-mid{grid-column:2;grid-row:1;align-self:center;text-align:left;padding:0 var(--pad-x) 0 calc(var(--pad-x) * 1.2)}
+#cardShell[data-layout="split"]:not(.vertical) .bk .b-line{margin-left:0}
+#cardShell[data-layout="split"]:not(.vertical) .bk .b-social{justify-content:flex-start}
+#cardShell[data-layout="split"]:not(.vertical) .bk .b-bottom{grid-column:2;grid-row:2;justify-content:flex-start;gap:calc(var(--pad-x) * .8);margin:0;padding:0 var(--pad-x) var(--pad-y) calc(var(--pad-x) * 1.2)}
+
+/* ── Split band: portrait (band across the top) ── */
+#cardShell[data-layout="split"].vertical .front{grid-template-columns:1fr auto;grid-template-rows:var(--band-h) 1fr auto}
+#cardShell[data-layout="split"].vertical .front .lay-band{left:0;right:0;top:0;height:var(--band-h);border-bottom:1px solid rgba(var(--card-glow),.28)}
+#cardShell[data-layout="split"].vertical .front .mono{grid-column:1;grid-row:1;justify-self:start;align-self:start;margin:var(--pad-y) 0 0 var(--pad-x)}
+#cardShell[data-layout="split"].vertical .front .avail{grid-column:1;grid-row:1;justify-self:start;align-self:end;margin:0 0 var(--pad-y) var(--pad-x)}
+#cardShell[data-layout="split"].vertical .front .fqr-tip{left:auto;right:0;transform:none}
+#cardShell[data-layout="split"].vertical .front .fqw{grid-column:2;grid-row:1;justify-self:end;align-self:center;margin:0 var(--pad-x) 0 0}
+#cardShell[data-layout="split"].vertical .front .f-mid{grid-column:1 / -1;grid-row:2;align-self:center;padding:0 var(--pad-x)}
+#cardShell[data-layout="split"].vertical .front .f-contacts{grid-column:1 / -1;grid-row:3;width:auto;padding:0 var(--pad-x) var(--pad-y)}
+#cardShell[data-layout="split"].vertical .bk{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto}
+#cardShell[data-layout="split"].vertical .bk .b-top{grid-column:1;grid-row:1;border-bottom:1px solid rgba(var(--card-glow),.28);padding:var(--pad-y) var(--pad-x)}
+#cardShell[data-layout="split"].vertical .bk .b-mid{grid-column:1;grid-row:2;align-self:center}
+#cardShell[data-layout="split"].vertical .bk .b-bottom{grid-column:1;grid-row:3;margin:0;padding:0 var(--pad-x) var(--pad-y)}
 .b-bottom{display:flex;gap:16px;z-index:var(--z-card);margin-bottom:4px}
 .b-stat{text-align:center}
 .b-sl{font-family:var(--M);font-size:6.5px;color:var(--card-text-label);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;transition:color .78s}
@@ -936,25 +1008,42 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
 
 /* ═══ 15. PRINT ═══════════════════════════════════════════════════ */
 @page{size:3.5in 2in;margin:0}
+/* a portrait card needs a portrait page; #cardShell.vertical selects this one */
+@page vcard{size:2in 3.5in;margin:0}
 @media print{
   .ctrl,.qr-bar,.flip-hint,.stage-lbl,.mbg,.print-spec,.toast{display:none!important}
   .app{display:block}
-  .stage{padding:1cm;background:#fff;overflow:visible;min-height:auto}
+  /* the page IS the card (see @page), so any stage padding would push the card
+     onto extra pages; the footer holds only screen-only controls */
+  .stage{padding:0;background:#fff;overflow:visible;min-height:auto}
+  .sfooter{display:none!important}
   .scene::after{display:none}
-  /* All padding/QR sizing below is calc()-driven off --card-w/--card-h, so
-     these must be set to the REAL print dimensions here — otherwise every
-     descendant calc() silently reuses the on-screen editor's pixel values
-     (490/280) instead of the actual 3.5in/2in being printed, throwing off
-     every proportion at print time even though the box itself is sized
-     correctly via width/height below. */
-  #cardShell{--card-w:3.5in;--card-h:2in;transform:none!important;width:3.5in!important;height:2in!important;animation:none}
-  .bcard{transform:none!important;width:3.5in;height:2in;transform-style:flat}
-  .face{position:relative;transform:none!important;backface-visibility:visible;height:2in;box-shadow:0 0 0 .5pt #ccc;break-inside:avoid}
-  #cardShell.vertical{--card-w:2in;--card-h:3.5in;width:2in!important;height:3.5in!important}
-  #cardShell.vertical .bcard{width:2in;height:3.5in}
-  #cardShell.vertical .face{height:3.5in}
+  /* Print the card exactly as designed on screen (490x280 / 280x490 px), scaled
+     down uniformly to the physical size with zoom: 336/490 = .685714, so
+     490px -> 3.5in and 280px -> 2in, and portrait is 2in x 3.5in. Setting the
+     custom properties to real inches instead (the earlier approach) left every
+     font at its screen pixel size inside a box ~31% smaller, so rows wrapped
+     and overlapped. zoom (unlike transform) also shrinks the layout box, so the
+     page breaks fall in the right place. */
+  /* opacity:1 matters: the screen rule starts #cardShell at opacity:0 and relies
+     on the entrance animation's fill to reach 1. Dropping the animation here
+     without restoring opacity printed completely blank pages. */
+  #cardShell{--card-w:490px;--card-h:280px;zoom:.685714;transform:none!important;width:var(--card-w)!important;height:auto!important;animation:none;opacity:1!important}
+  /* containers size to their content: the back face sits below the front and a
+     fixed container height stops Chrome carrying it onto page 2 (it was dropped) */
+  .bcard{transform:none!important;width:var(--card-w);height:auto!important;transform-style:flat}
+  .face{position:relative;transform:none!important;backface-visibility:visible;height:var(--card-h);box-shadow:0 0 0 .5pt #ccc;break-inside:avoid}
+  #cardShell.vertical{--card-w:280px;--card-h:490px;page:vcard}
+  /* screen-only hint: it hangs below the face (spilled onto the next page) and "tap" means nothing on paper */
+  .fqr-tip{display:none!important}
+  /* Chrome's print dialog has "Background graphics" off by default, which would print this dark card as
+     pale text on white; force the card's own colors, and square the corners so it is cut-ready */
+  .face,.face *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .face{border-radius:0!important}
   .front::before{content:'FRONT';display:block;font-family:Arial;font-size:7pt;color:#888;letter-spacing:2px;position:absolute;top:-16pt;left:0}
-  .bk{margin-top:.4in;page-break-before:always}
+  /* the forced break already separates the sides; a top margin here survived the break
+     and pushed the whole back face down, spilling its last row onto a third page */
+  .bk{margin-top:0;break-before:page;page-break-before:always}
   .bk::before{content:'BACK';display:block;font-family:Arial;font-size:7pt;color:#888;letter-spacing:2px;position:absolute;top:-16pt;left:0}
 }</style>
 </head>
@@ -1015,6 +1104,7 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
 
         <!-- FRONT -->
         <div class="face front" onclick="sp(event)">
+          <div class="lay-band" aria-hidden="true"></div>
           <div class="gv"><div class="gl h g1"></div><div class="gl h g2"></div><div class="gl v g3"></div><div class="gl v g4"></div></div>
           <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
           <div class="f-top">
@@ -1122,6 +1212,26 @@ button:focus-visible,.act:focus-visible,.tdot:focus-visible,.qt:focus-visible{
           Vertical
         </button>
       </div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="csec">
+      <div class="clbl" id="layout-label">Layout</div>
+      <div class="orient-toggle" role="radiogroup" aria-labelledby="layout-label">
+        <button type="button" class="orient-btn on" id="layoutClassic" onclick="setLayout('classic',true)" role="radio" aria-checked="true" aria-label="Classic layout">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="1" y="1" width="18" height="12" rx="1.5"/><path d="M4 4.5h7M4 7h5M4 9.5h8"/></svg>
+          Classic
+        </button>
+        <button type="button" class="orient-btn" id="layoutCentered" onclick="setLayout('centered',true)" role="radio" aria-checked="false" aria-label="Centered layout">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="1" y="1" width="18" height="12" rx="1.5"/><path d="M6 4.5h8M7 7h6M5.5 9.5h9"/></svg>
+          Centered
+        </button>
+        <button type="button" class="orient-btn" id="layoutSplit" onclick="setLayout('split',true)" role="radio" aria-checked="false" aria-label="Split band layout">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="1" y="1" width="18" height="12" rx="1.5"/><path d="M7 1v12M10 5h6M10 8h4"/></svg>
+          Split band
+        </button>
+      </div>
+      <p class="gen-hint" style="margin-top:.4rem;margin-bottom:0">How the card is arranged. Works with either card shape, and with any palette.</p>
     </div>
 
     <!-- THEME -->
@@ -4463,6 +4573,7 @@ function saveCurrentAsRole(){
     orientation:(shell&&shell.classList.contains('vertical'))?'portrait':'landscape',
     availability:getAvailability(),
     social:getSocial(),
+    layout:CUR_LAYOUT,
     content:{
       name:(document.getElementById('iName')||{}).value||'',
       email:(document.getElementById('iEmail')||{}).value||'',
@@ -4500,6 +4611,7 @@ function applyCustomRole(key){
   setOrientation(roleObj.orientation==='portrait'?'portrait':'landscape');
   if(roleObj.availability)setAvailability(roleObj.availability);
   if(roleObj.social)setSocial(roleObj.social);
+  if(roleObj.layout)setLayout(roleObj.layout);
   showRoleSuggestion('custom',roleObj.label);
   showToast('Applied role: '+roleObj.label,'success');
 }
@@ -5052,6 +5164,37 @@ function setOrientation(mode,skipAnimation){
   try{localStorage.setItem(ORIENTATION_KEY,mode);}catch(e){/* ignore */}
   scaleCard();
 }
+/* ── LAYOUT VARIANTS ── classic / centered / split. The arrangement itself is
+   pure CSS keyed off #cardShell[data-layout]; this is just the state, the
+   picker buttons and the saved preference (same pattern as orientation). */
+const LAYOUT_KEY='cardStudio.layout';
+const LAYOUTS=['classic','centered','split'];
+let CUR_LAYOUT='classic';
+let layoutFadeTmr=null;
+function setLayout(name,animate){
+  if(LAYOUTS.indexOf(name)<0)name='classic';
+  const shell=document.getElementById('cardShell');
+  if(!shell)return;
+  CUR_LAYOUT=name;
+  clearTimeout(layoutFadeTmr);
+  if(animate&&shell.getAttribute('data-layout')!==name){
+    shell.classList.add('layout-out');
+    layoutFadeTmr=setTimeout(function(){shell.setAttribute('data-layout',name);shell.classList.remove('layout-out');},180);
+  }else{
+    shell.setAttribute('data-layout',name);shell.classList.remove('layout-out');
+  }
+  LAYOUTS.forEach(function(k){
+    const b=document.getElementById('layout'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(b){b.classList.toggle('on',k===name);b.setAttribute('aria-checked',k===name?'true':'false');}
+  });
+  try{localStorage.setItem(LAYOUT_KEY,name);}catch(e){/* ignore */}
+}
+function loadLayout(){
+  let saved='classic';
+  try{saved=localStorage.getItem(LAYOUT_KEY)||'classic';}catch(e){/* ignore */}
+  setLayout(saved);
+}
+
 function loadOrientation(){
   let mode='landscape';
   try{mode=localStorage.getItem(ORIENTATION_KEY)||'landscape';}catch(e){/* ignore */}
@@ -5414,6 +5557,7 @@ function loadTpl(key,el){
   // rest, leave the current pill exactly as the person set it
   if(t.availability)setAvailability(t.availability);
   if(t.social)setSocial(t.social);
+  if(t.layout)setLayout(t.layout);
   // Apply colors: a custom/generated palette stored via "Update this
   // template" takes priority over the theme reference, since that's what
   // was actually last saved for this template — otherwise fall back to
@@ -5488,7 +5632,8 @@ function updateExistingTemplate(key){
     loc:(document.getElementById('iLoc')||{}).value||existing.loc,
     qr:(document.getElementById('iQR')||{}).value||existing.qr,
     availability:getAvailability(),
-    social:getSocial()
+    social:getSocial(),
+    layout:CUR_LAYOUT
   });
   const matchKey=typeof findMatchingThemeKey==='function'?findMatchingThemeKey():null;
   if(matchKey){
@@ -5536,7 +5681,8 @@ function saveCurrentAsTemplate(){
     loc:(document.getElementById('iLoc')||{}).value||'',
     qr:(document.getElementById('iQR')||{}).value||CUR,
     availability:getAvailability(),
-    social:getSocial()
+    social:getSocial(),
+    layout:CUR_LAYOUT
   };
   const matchKey=typeof findMatchingThemeKey==='function'?findMatchingThemeKey():null;
   if(matchKey){
@@ -5722,6 +5868,7 @@ function saveTpl(){
     orientation:(shell&&shell.classList.contains('vertical'))?'portrait':'landscape',
     availability:getAvailability(),
     social:getSocial(),
+    layout:CUR_LAYOUT,
     savedAt:new Date().toISOString()
   };
   const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
@@ -5771,6 +5918,7 @@ function loadTplFile(input){
       // status, so they correctly come back with the pill off
       setAvailability(d.availability);
       setSocial(d.social);
+      setLayout(d.layout||'classic');
       live();showToast('Template loaded — colors, logo & shape restored!','success');
     }catch(err){showToast('Invalid template file','error');}
   };
@@ -6027,6 +6175,7 @@ window.CardDesigner={
   render:{scale:scaleCard,refreshLive:live},
   availability:{get:getAvailability,set:setAvailability},
   social:{get:getSocial,set:setSocial},
+  layout:{get:function(){return CUR_LAYOUT;},set:setLayout},
   qr:{share:shareQR,copyLink:copyQRLink,downloadImage:downloadQRImage,open:openModal}
 };
 
@@ -6037,6 +6186,7 @@ window.addEventListener('load',function(){
   setAll(CUR);
   scaleCard();
   loadOrientation();
+  loadLayout();
   loadChromeTheme();
   updateTemplateActionsUI();
   refreshOverriddenThemeDots();
